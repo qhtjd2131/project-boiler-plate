@@ -8,8 +8,10 @@ Generic boilerplate for small-to-mid outsourced projects.
 - Supabase (infra/auth/db/storage)
 - Directus (client-operated CMS)
 - OpenCode config + MCP profile (`opencode.json`, `opencode.md`)
+- Client reference playbook (`docs/client-reference.md`)
 - Built-in i18n routing (`ko`, `en`) + locale-aware SEO
 - Supabase Auth guard + RBAC proxy guard
+- Google Analytics module flag (on/off)
 - Provision scripts for Supabase and Directus schema bootstrapping
 
 ## Version Policy
@@ -72,8 +74,10 @@ pnpm run dev
 
 - `NEXT_PUBLIC_ENABLE_SUPABASE`: `true`/`false`
 - `NEXT_PUBLIC_ENABLE_DIRECTUS`: `true`/`false`
+- `NEXT_PUBLIC_ENABLE_GA`: `true`/`false`
 - `NEXT_PUBLIC_PRIMARY_BACKEND`: `supabase` or `directus`
 - `NEXT_PUBLIC_SITE_URL`: canonical site url used by sitemap/robots
+- `NEXT_PUBLIC_GA_MEASUREMENT_ID`: GA4 Measurement ID (e.g. `G-XXXXXXXXXX`)
 
 ### Auth Guard
 
@@ -150,10 +154,27 @@ type AppResult<T> =
 
 - OpenCode profile: `opencode.json`
 - Project context/rules: `opencode.md`
+- Client design reference source: `docs/client-reference.md`
 - Enabled MCP servers:
   - `supabase` (remote)
   - `directus` (local)
   - `shadcn` (local)
+
+### Client Reference Workflow
+
+1. Fill `docs/client-reference.md` with customer reference links.
+2. Classify links by `must / should / avoid`.
+3. Map references to routes before UI implementation.
+4. Validate final UI against the reference checklist.
+
+## Analytics
+
+- Google Analytics integration is modular and flag-based.
+- Enable by setting:
+  - `NEXT_PUBLIC_ENABLE_GA=true`
+  - `NEXT_PUBLIC_GA_MEASUREMENT_ID=G-XXXXXXXXXX`
+- Disable by setting `NEXT_PUBLIC_ENABLE_GA=false`.
+- Event helper entry point: `src/lib/analytics/google-analytics.ts`
 
 ## Execution Runbook
 

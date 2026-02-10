@@ -13,9 +13,11 @@
 - 필수 라우트 목록(예: `/`, `/{locale}/pricing`, `/{locale}/blog/[slug]`):
 - 콘텐츠 소스(정적/Directus 컬렉션명):
 - 백엔드 플래그(`supabase`, `directus`, `primary`):
+- 분석 플래그(`google_analytics` on/off, 측정 ID 보유 여부):
 - 인증/권한 요구(비회원/회원/관리자):
 - 운영 도메인/지원 언어(예: `example.com`, `ko,en`):
 - 브랜드 톤 키워드 3개(예: `premium`, `clean`, `trustworthy`):
+- 참고 사이트/디자인 링크 문서(`docs/client-reference.md`) 작성 여부:
 
 ## 2) AI 확인 질문 (구현에 직접 쓰이는 질문만)
 
@@ -110,6 +112,7 @@
 
 - 매 프로젝트 시작 시 시각 콘셉트를 1문장으로 먼저 정의한다
 - 무색무취 템플릿 느낌을 피하고, 브랜드 톤 키워드에 맞는 시각 언어를 유지한다
+- 고객 참고 링크는 `docs/client-reference.md`를 기준으로 해석하고, 복제가 아닌 재해석을 원칙으로 한다
 
 ### 타이포그래피
 
@@ -159,7 +162,15 @@
 - 기본 MCP: `supabase`, `directus`, `shadcn`
 - 민감 프로젝트는 Supabase MCP를 `read_only + project_ref`로 제한
 
-## 10) 완료 기준 (Definition of Done)
+## 10) 고객 레퍼런스 링크 운영 규칙
+
+- 고객이 전달한 참고 사이트/디자인 링크는 반드시 `docs/client-reference.md`에 구조화해 기록한다
+- 링크별로 `must / should / avoid`를 구분해 우선순위를 명시한다
+- 페이지 단위 매핑(`/{locale}`, `/{locale}/portfolio` 등)을 작성해 구현 시 추적 가능하게 유지한다
+- 레퍼런스 간 충돌이 있으면 전환 효율, 접근성, 브랜드 톤 순으로 결정한다
+- 구현 완료 전 "레퍼런스 반영 여부"를 간단 체크리스트로 검수한다
+
+## 11) 완료 기준 (Definition of Done)
 
 - 코드: 구조/네이밍/타입 규칙 위반 없음
 - 기능: 핵심 사용자 플로우 동작

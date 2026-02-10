@@ -57,6 +57,15 @@ Minimum to run end-to-end:
 - SEO:
   - `NEXT_PUBLIC_SITE_URL`
 
+## 2.5) Design Reference Intake (before implementation)
+
+- Collect customer reference links and record them in `docs/client-reference.md`.
+- For each link, capture:
+  - what must be reflected,
+  - what should be reflected,
+  - what should be avoided.
+- Map each important reference to target routes before design implementation starts.
+
 ## 3) Local Setup
 
 ```bash

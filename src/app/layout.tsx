@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { JetBrains_Mono, Manrope } from "next/font/google";
 
 import { SiteShell } from "@/components/layout/site-shell";
+import { GoogleAnalyticsProvider } from "@/components/providers/google-analytics-provider";
 import { QueryProvider } from "@/components/providers/query-provider";
 import { getSiteUrl } from "@/lib/seo/site-url";
 
@@ -41,6 +42,7 @@ export default function RootLayout({
         <QueryProvider>
           <SiteShell>{children}</SiteShell>
         </QueryProvider>
+        <GoogleAnalyticsProvider />
       </body>
     </html>
   );
