@@ -74,21 +74,21 @@ Recommended feature flags for integrated mode:
 Install and run:
 
 ```bash
-npm install
-npm run provision:all
-npm run dev
+pnpm install
+pnpm run provision:all
+pnpm run dev
 ```
 
 ## 4) Provisioning Behavior
 
-### Supabase (`npm run provision:supabase`)
+### Supabase (`pnpm run provision:supabase`)
 
 - Creates `project_briefs` table (or `SUPABASE_BRIEF_TABLE`)
 - Creates `created_at` index
 - Creates `updated_at` trigger function
 - Enables RLS on the table
 
-### Directus (`npm run provision:directus`)
+### Directus (`pnpm run provision:directus`)
 
 - Creates collection `project_briefs` (or `DIRECTUS_COLLECTION`)
 - Creates required fields:
@@ -148,8 +148,8 @@ Behavior:
 ## 9) Delivery Checklist
 
 - [ ] `.env.local` values validated
-- [ ] `npm run lint`, `npm run typecheck`, `npm run build` all pass
-- [ ] `npm run provision:all` completed successfully
+- [ ] `pnpm run lint`, `pnpm run typecheck`, `pnpm run build` all pass
+- [ ] `pnpm run provision:all` completed successfully
 - [ ] Auth redirect and RBAC route checks passed
 - [ ] Locale SEO checks passed (`sitemap.xml`, canonical, hreflang)
 - [ ] Vercel Production deployment verified

@@ -48,8 +48,8 @@ export default async function ProtectedAppPage({ params }: AppPageProps) {
           <CardTitle>{locale === "ko" ? "보호된 앱 페이지" : "Protected App Page"}</CardTitle>
           <CardDescription>
             {locale === "ko"
-              ? "이 경로는 middleware + RBAC 가드로 보호됩니다."
-              : "This route is protected by middleware + RBAC guard."}
+              ? "이 경로는 proxy + RBAC 가드로 보호됩니다."
+              : "This route is protected by proxy + RBAC guard."}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-3">

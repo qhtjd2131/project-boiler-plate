@@ -9,7 +9,7 @@ Generic boilerplate for small-to-mid outsourced projects.
 - Directus (client-operated CMS)
 - OpenCode config + MCP profile (`opencode.json`, `opencode.md`)
 - Built-in i18n routing (`ko`, `en`) + locale-aware SEO
-- Supabase Auth guard + RBAC middleware
+- Supabase Auth guard + RBAC proxy guard
 - Provision scripts for Supabase and Directus schema bootstrapping
 
 ## Version Policy
@@ -49,7 +49,7 @@ Breakpoint tokens are defined in `src/app/globals.css` and should stay stable ac
 1. Install dependencies
 
 ```bash
-npm install
+pnpm install
 ```
 
 2. Create local env
@@ -61,7 +61,7 @@ cp .env.example .env.local
 3. Start dev server
 
 ```bash
-npm run dev
+pnpm run dev
 ```
 
 4. Open `http://localhost:3000`
@@ -120,17 +120,17 @@ type AppResult<T> =
 
 ## Scripts
 
-- `npm run dev` - start dev server
-- `npm run build` - production build
-- `npm run start` - start production server
-- `npm run lint` - run eslint
-- `npm run lint:fix` - autofix lint issues
-- `npm run typecheck` - run TypeScript type checks
-- `npm run format` - run prettier write mode
-- `npm run format:check` - run prettier check mode
-- `npm run provision:supabase` - create Supabase table/index/trigger
-- `npm run provision:directus` - create Directus collection/fields
-- `npm run provision:all` - run both provisioning scripts
+- `pnpm run dev` - start dev server
+- `pnpm run build` - production build
+- `pnpm run start` - start production server
+- `pnpm run lint` - run eslint
+- `pnpm run lint:fix` - autofix lint issues
+- `pnpm run typecheck` - run TypeScript type checks
+- `pnpm run format` - run prettier write mode
+- `pnpm run format:check` - run prettier check mode
+- `pnpm run provision:supabase` - create Supabase table/index/trigger
+- `pnpm run provision:directus` - create Directus collection/fields
+- `pnpm run provision:all` - run both provisioning scripts
 
 ## Auth + RBAC
 
@@ -180,10 +180,10 @@ Workflow file: `.github/workflows/ci-cd.yml`
   - All pull requests
   - Push to `main`
 - CI steps:
-  - `npm ci`
-  - `npm run lint`
-  - `npm run typecheck`
-  - `npm run build`
+  - `pnpm install --frozen-lockfile`
+  - `pnpm run lint`
+  - `pnpm run typecheck`
+  - `pnpm run build`
 - CD trigger:
   - Push to `main`
   - Runs only when required Vercel secrets exist
