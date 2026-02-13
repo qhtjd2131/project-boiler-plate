@@ -184,6 +184,7 @@ type AppResult<T> =
 - 기본 MCP:
   - `supabase` (remote)
   - `sanity` (local)
+  - `context7` (remote)
   - `shadcn` (local)
 
 ### 고객 레퍼런스 워크플로

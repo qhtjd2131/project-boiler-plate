@@ -160,7 +160,7 @@
 ## 9) MCP 운영 규칙
 
 - OpenCode MCP는 단일 프로필(`opencode.json`) 기준
-- 기본 MCP: `supabase`, `sanity`, `shadcn`
+- 기본 MCP: `supabase`, `sanity`, `context7`, `shadcn`
 - 민감 프로젝트는 Supabase MCP를 `read_only + project_ref`로 제한
 
 ## 10) 고객 레퍼런스 링크 운영 규칙
