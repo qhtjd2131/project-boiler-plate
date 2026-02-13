@@ -19,7 +19,7 @@ type SignInFormProps = {
 const authProvider = createAuthProvider();
 
 function resolveNextPath(nextValue: string | null, locale: AppLocale): string {
-  if (!nextValue || !nextValue.startsWith("/")) {
+  if (!nextValue || !nextValue.startsWith("/") || nextValue.startsWith("//")) {
     return localizePathname("/app", locale);
   }
 

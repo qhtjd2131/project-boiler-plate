@@ -40,7 +40,7 @@ Request access in writing before receiving keys. Use least-privilege first.
   - `NEXT_PUBLIC_SANITY_PROJECT_ID`
   - `NEXT_PUBLIC_SANITY_DATASET`
   - `NEXT_PUBLIC_SANITY_API_VERSION`
-  - `SANITY_API_TOKEN` (for server-side operations and MCP)
+  - `SANITY_API_TOKEN` (recommended; required for MCP or private dataset access)
   - `SANITY_STUDIO_URL` (optional)
 
 ## 2) Required Key Checklist
@@ -54,7 +54,7 @@ Minimum to run end-to-end:
   - `NEXT_PUBLIC_SANITY_PROJECT_ID`
   - `NEXT_PUBLIC_SANITY_DATASET`
   - `NEXT_PUBLIC_SANITY_API_VERSION`
-  - `SANITY_API_TOKEN`
+  - `SANITY_API_TOKEN` (optional for public-read dataset, required for MCP/private access)
 - Provisioning:
   - `SUPABASE_DB_URL`
 - SEO:
@@ -132,11 +132,15 @@ Quick check:
 
 ## 6) i18n + SEO Verification
 
-- Root `/` redirects to localized route (`/ko` or `/en`)
+- Root `/` redirects to localized route of current supported locale set
 - `/{locale}` pages render locale-specific text
 - `sitemap.xml` contains locale URLs
 - Canonical/hreflang exists for localized pages
 - `robots.txt` points to sitemap
+
+Locale configuration source:
+
+- `src/lib/i18n/config.ts` (`LOCALE_CONFIG`, `DEFAULT_LOCALE`)
 
 ## 7) CI/CD Setup
 

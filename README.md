@@ -9,7 +9,7 @@ Generic boilerplate for small-to-mid outsourced projects.
 - Sanity (public content CMS)
 - OpenCode config + MCP profile (`opencode.json`, `opencode.md`)
 - Client reference playbook (`docs/client-reference.md`)
-- Built-in i18n routing (`ko`, `en`) + locale-aware SEO
+- Built-in i18n routing (default `ko`,`en`, extensible) + locale-aware SEO
 - Supabase Auth guard + RBAC proxy guard
 - Google Analytics module flag (on/off)
 - Provision scripts for Supabase and Sanity validation
@@ -46,11 +46,12 @@ Breakpoint tokens are defined in `src/app/globals.css` and should stay stable ac
 
 ## i18n + SEO
 
-- Locale routes: `/{locale}` with supported locales `ko`, `en`
+- Locale routes: `/{locale}` with default locales `ko`, `en`
 - Root `/` redirects to preferred locale from `accept-language`
 - Canonical/hreflang are generated per locale page
 - `sitemap.xml` auto-discovers App Router pages and expands locale routes
 - Private paths (`/app`, `/auth`, `/forbidden`) are excluded from sitemap
+- Locale set is centrally managed in `src/lib/i18n/config.ts` (`LOCALE_CONFIG`)
 
 ## Quick Start
 
@@ -103,7 +104,7 @@ pnpm run dev
 - `NEXT_PUBLIC_SANITY_PROJECT_ID`
 - `NEXT_PUBLIC_SANITY_DATASET`
 - `NEXT_PUBLIC_SANITY_API_VERSION`
-- `SANITY_API_TOKEN` (server-only)
+- `SANITY_API_TOKEN` (server-only, optional for public-read datasets)
 - `SANITY_STUDIO_URL` (optional)
 
 ### MCP Helper

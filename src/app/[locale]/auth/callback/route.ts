@@ -4,7 +4,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { DEFAULT_LOCALE, isAppLocale, localizePathname, type AppLocale } from "@/lib/i18n/config";
 
 function sanitizeNextPath(value: string | null, locale: AppLocale): string {
-  if (!value || !value.startsWith("/")) {
+  if (!value || !value.startsWith("/") || value.startsWith("//")) {
     return localizePathname("/app", locale);
   }
 
