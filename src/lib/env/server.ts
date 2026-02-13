@@ -3,10 +3,9 @@ import "server-only";
 import { z } from "zod";
 
 const serverEnvSchema = z.object({
-  DIRECTUS_URL: z.string().default(""),
-  DIRECTUS_TOKEN: z.string().default(""),
-  DIRECTUS_COLLECTION: z.string().default("project_briefs"),
   SUPABASE_SERVICE_ROLE_KEY: z.string().default(""),
+  SANITY_API_TOKEN: z.string().default(""),
+  SANITY_STUDIO_URL: z.string().default(""),
 });
 
 export type ServerEnv = z.infer<typeof serverEnvSchema>;
@@ -19,10 +18,9 @@ export function getServerEnv(): ServerEnv {
   }
 
   cachedServerEnv = serverEnvSchema.parse({
-    DIRECTUS_URL: process.env.DIRECTUS_URL,
-    DIRECTUS_TOKEN: process.env.DIRECTUS_TOKEN,
-    DIRECTUS_COLLECTION: process.env.DIRECTUS_COLLECTION,
     SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
+    SANITY_API_TOKEN: process.env.SANITY_API_TOKEN,
+    SANITY_STUDIO_URL: process.env.SANITY_STUDIO_URL,
   });
 
   return cachedServerEnv;

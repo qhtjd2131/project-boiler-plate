@@ -5,5 +5,8 @@ import { resultOk } from "@/lib/contracts/result";
 
 export async function GET() {
   const status = getBackendStatus();
-  return NextResponse.json(resultOk(status, status.activeSource));
+  const metaSource =
+    status.operationalSource !== "none" ? status.operationalSource : status.contentSource;
+
+  return NextResponse.json(resultOk(status, metaSource));
 }

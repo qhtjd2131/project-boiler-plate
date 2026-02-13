@@ -23,6 +23,7 @@ export function SiteHeader() {
   const navigation = [
     { href: localizePathname("/", locale), label: messages.common.dashboard },
     { href: localizePathname("/app", locale), label: messages.common.app },
+    { href: localizePathname("/blog", locale), label: messages.common.blog },
     { href: localizePathname("/auth/sign-in", locale), label: messages.common.signIn },
     { href: "/api/backends/status", label: messages.common.backendStatusApi },
     { href: "/api/backends/briefs", label: messages.common.briefsApi },

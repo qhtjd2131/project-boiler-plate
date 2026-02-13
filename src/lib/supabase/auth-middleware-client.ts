@@ -8,12 +8,17 @@ type MiddlewareClientResult = {
   configured: boolean;
 };
 
-export function createSupabaseMiddlewareClient(request: NextRequest): MiddlewareClientResult {
+export function createSupabaseMiddlewareClient(
+  request: NextRequest,
+  requestHeaders: Headers,
+): MiddlewareClientResult {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
   let response = NextResponse.next({
-    request,
+    request: {
+      headers: requestHeaders,
+    },
   });
 
   if (!supabaseUrl || !supabaseAnonKey) {
@@ -35,7 +40,9 @@ export function createSupabaseMiddlewareClient(request: NextRequest): Middleware
         }
 
         response = NextResponse.next({
-          request,
+          request: {
+            headers: requestHeaders,
+          },
         });
 
         for (const { name, value, options } of cookiesToSet) {

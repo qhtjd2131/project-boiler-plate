@@ -1,4 +1,4 @@
-export type DataSource = "supabase" | "directus" | "none";
+export type DataSource = "supabase" | "sanity" | "none";
 
 export type AppErrorCode =
   | "VALIDATION"

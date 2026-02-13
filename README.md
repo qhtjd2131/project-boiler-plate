@@ -5,14 +5,14 @@ Generic boilerplate for small-to-mid outsourced projects.
 - Next.js + React + Tailwind CSS + shadcn/ui
 - react-hook-form + zod
 - TanStack Query
-- Supabase (infra/auth/db/storage)
-- Directus (client-operated CMS)
+- Supabase (operational DB/Auth/Storage)
+- Sanity (public content CMS)
 - OpenCode config + MCP profile (`opencode.json`, `opencode.md`)
 - Client reference playbook (`docs/client-reference.md`)
 - Built-in i18n routing (`ko`, `en`) + locale-aware SEO
 - Supabase Auth guard + RBAC proxy guard
 - Google Analytics module flag (on/off)
-- Provision scripts for Supabase and Directus schema bootstrapping
+- Provision scripts for Supabase and Sanity validation
 
 ## Version Policy
 
@@ -24,8 +24,14 @@ All package versions are pinned (exact version), including lockfile-based instal
 - `tailwindcss@4.1.18`, `shadcn@3.8.4`
 - `react-hook-form@7.71.1`, `zod@4.3.6`
 - `@tanstack/react-query@5.90.20`
-- `@supabase/supabase-js@2.95.3`, `@directus/sdk@21.1.0`
+- `@supabase/supabase-js@2.95.3`, `@sanity/client@7.14.1`
 - `lodash-es@4.17.23`
+
+## Architecture Roles
+
+- Supabase: operational data, authentication, storage
+- Sanity: public content management only
+- These are not fallback replacements; they are intentionally separated responsibilities.
 
 ## Responsive Layout Policy
 
@@ -73,9 +79,8 @@ pnpm run dev
 ### Feature Flags
 
 - `NEXT_PUBLIC_ENABLE_SUPABASE`: `true`/`false`
-- `NEXT_PUBLIC_ENABLE_DIRECTUS`: `true`/`false`
+- `NEXT_PUBLIC_ENABLE_SANITY`: `true`/`false`
 - `NEXT_PUBLIC_ENABLE_GA`: `true`/`false`
-- `NEXT_PUBLIC_PRIMARY_BACKEND`: `supabase` or `directus`
 - `NEXT_PUBLIC_SITE_URL`: canonical site url used by sitemap/robots
 - `NEXT_PUBLIC_GA_MEASUREMENT_ID`: GA4 Measurement ID (e.g. `G-XXXXXXXXXX`)
 
@@ -85,32 +90,25 @@ pnpm run dev
 - `AUTH_SIGN_IN_PATH`: default `/auth/sign-in`
 - `AUTH_FORBIDDEN_PATH`: default `/forbidden`
 
-### Supabase
+### Supabase (Operational)
 
 - `NEXT_PUBLIC_SUPABASE_URL`
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-- `SUPABASE_SERVICE_ROLE_KEY` (optional, server-side write operations)
+- `SUPABASE_SERVICE_ROLE_KEY` (server-only, required for server-side write endpoints)
 - `SUPABASE_DB_URL` (required for schema provisioning script)
 - `SUPABASE_BRIEF_TABLE` (optional, default `project_briefs`)
 
-### Directus
+### Sanity (Public Content)
 
-- `DIRECTUS_URL`
-- `DIRECTUS_TOKEN`
-- `DIRECTUS_COLLECTION` (default: `project_briefs`)
-- `DIRECTUS_ADMIN_TOKEN` (required for schema provisioning script)
+- `NEXT_PUBLIC_SANITY_PROJECT_ID`
+- `NEXT_PUBLIC_SANITY_DATASET`
+- `NEXT_PUBLIC_SANITY_API_VERSION`
+- `SANITY_API_TOKEN` (server-only)
+- `SANITY_STUDIO_URL` (optional)
 
 ### MCP Helper
 
 - `SUPABASE_PROJECT_REF` (used by Supabase MCP URL in `opencode.json`)
-
-## Backend Routing Rules
-
-- Supabase and Directus are role-based, not direct replacements.
-- Runtime adapter resolution:
-  1. Use `NEXT_PUBLIC_PRIMARY_BACKEND` first (if enabled and configured)
-  2. Fallback to the other backend (if enabled and configured)
-  3. Fallback to in-memory mock adapter (`source: "none"`)
 
 ## API Result Format
 
@@ -118,9 +116,18 @@ All routes use the same compact format:
 
 ```ts
 type AppResult<T> =
-  | { ok: true; data: T; meta: { source: "supabase" | "directus" | "none"; at: string } }
+  | { ok: true; data: T; meta: { source: "supabase" | "sanity" | "none"; at: string } }
   | { ok: false; error: { code: string; message: string; detail?: string } };
 ```
+
+## Public Content Layer (Sanity)
+
+- Repository: `src/lib/backend/sanity-content-repository.ts`
+- List API: `GET /api/content/public-items`
+- Detail API: `GET /api/content/public-items/:slug`
+- Routes:
+  - `/{locale}/blog`
+  - `/{locale}/blog/[slug]`
 
 ## Scripts
 
@@ -133,8 +140,8 @@ type AppResult<T> =
 - `pnpm run format` - run prettier write mode
 - `pnpm run format:check` - run prettier check mode
 - `pnpm run provision:supabase` - create Supabase table/index/trigger
-- `pnpm run provision:directus` - create Directus collection/fields
-- `pnpm run provision:all` - run both provisioning scripts
+- `pnpm run provision:sanity` - validate Sanity project and dataset connection
+- `pnpm run provision:all` - run both setup checks
 
 ## Auth + RBAC
 
@@ -157,7 +164,7 @@ type AppResult<T> =
 - Client design reference source: `docs/client-reference.md`
 - Enabled MCP servers:
   - `supabase` (remote)
-  - `directus` (local)
+  - `sanity` (local)
   - `shadcn` (local)
 
 ### Client Reference Workflow
@@ -180,6 +187,12 @@ type AppResult<T> =
 
 - Detailed client permission flow and key collection guide:
   - `README.RUNBOOK.md`
+
+## Implementation Guides
+
+- Supabase: `docs/supabase-implementation-guide.md`
+- Sanity: `docs/sanity-implementation-guide.md`
+- i18n: `docs/i18n-implementation-guide.md`
 
 ## SEO Defaults
 

@@ -2,11 +2,14 @@ import { z } from "zod";
 
 const publicEnvSchema = z.object({
   NEXT_PUBLIC_ENABLE_SUPABASE: z.enum(["true", "false"]).default("false"),
-  NEXT_PUBLIC_ENABLE_DIRECTUS: z.enum(["true", "false"]).default("false"),
+  NEXT_PUBLIC_ENABLE_SANITY: z.enum(["true", "false"]).default("false"),
   NEXT_PUBLIC_ENABLE_GA: z.enum(["true", "false"]).default("false"),
-  NEXT_PUBLIC_PRIMARY_BACKEND: z.enum(["supabase", "directus"]).default("supabase"),
+  NEXT_PUBLIC_SITE_URL: z.string().default("http://localhost:3000"),
   NEXT_PUBLIC_SUPABASE_URL: z.string().default(""),
   NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().default(""),
+  NEXT_PUBLIC_SANITY_PROJECT_ID: z.string().default(""),
+  NEXT_PUBLIC_SANITY_DATASET: z.string().default("production"),
+  NEXT_PUBLIC_SANITY_API_VERSION: z.string().default("2025-02-19"),
   NEXT_PUBLIC_GA_MEASUREMENT_ID: z.string().default(""),
 });
 
@@ -14,8 +17,7 @@ export type PublicEnv = z.infer<typeof publicEnvSchema>;
 
 export type PublicBackendFlags = {
   enableSupabase: boolean;
-  enableDirectus: boolean;
-  primaryBackend: "supabase" | "directus";
+  enableSanity: boolean;
 };
 
 export type PublicAnalyticsFlags = {
@@ -32,11 +34,14 @@ export function getPublicEnv(): PublicEnv {
 
   cachedPublicEnv = publicEnvSchema.parse({
     NEXT_PUBLIC_ENABLE_SUPABASE: process.env.NEXT_PUBLIC_ENABLE_SUPABASE,
-    NEXT_PUBLIC_ENABLE_DIRECTUS: process.env.NEXT_PUBLIC_ENABLE_DIRECTUS,
+    NEXT_PUBLIC_ENABLE_SANITY: process.env.NEXT_PUBLIC_ENABLE_SANITY,
     NEXT_PUBLIC_ENABLE_GA: process.env.NEXT_PUBLIC_ENABLE_GA,
-    NEXT_PUBLIC_PRIMARY_BACKEND: process.env.NEXT_PUBLIC_PRIMARY_BACKEND,
+    NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
     NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
     NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    NEXT_PUBLIC_SANITY_PROJECT_ID: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID,
+    NEXT_PUBLIC_SANITY_DATASET: process.env.NEXT_PUBLIC_SANITY_DATASET,
+    NEXT_PUBLIC_SANITY_API_VERSION: process.env.NEXT_PUBLIC_SANITY_API_VERSION,
     NEXT_PUBLIC_GA_MEASUREMENT_ID: process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID,
   });
 
@@ -48,8 +53,7 @@ export function getPublicBackendFlags(): PublicBackendFlags {
 
   return {
     enableSupabase: env.NEXT_PUBLIC_ENABLE_SUPABASE === "true",
-    enableDirectus: env.NEXT_PUBLIC_ENABLE_DIRECTUS === "true",
-    primaryBackend: env.NEXT_PUBLIC_PRIMARY_BACKEND,
+    enableSanity: env.NEXT_PUBLIC_ENABLE_SANITY === "true",
   };
 }
 

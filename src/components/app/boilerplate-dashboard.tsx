@@ -29,15 +29,19 @@ import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import {
   createProjectBriefSchema,
-  type CreateProjectBriefInput,
   type ProjectBrief,
+  type CreateProjectBriefInput,
 } from "@/lib/backend/project-brief";
+import type { PublicContentItem } from "@/lib/backend/public-content";
 import type { BackendStatus } from "@/lib/backend/types";
 import type { AppResult } from "@/lib/contracts/result";
 import type { AppLocale } from "@/lib/i18n/config";
 import type { AppMessages } from "@/lib/i18n/messages";
 
-type QueryKey = readonly ["backend-status"] | readonly ["project-briefs"];
+type QueryKey =
+  | readonly ["backend-status"]
+  | readonly ["project-briefs"]
+  | readonly ["public-content"];
 
 async function fetchResult<T>(context: QueryFunctionContext<QueryKey>): Promise<T> {
   const response = await fetch(getEndpoint(context.queryKey), {
@@ -56,6 +60,10 @@ async function fetchResult<T>(context: QueryFunctionContext<QueryKey>): Promise<
 function getEndpoint(queryKey: QueryKey): string {
   if (queryKey[0] === "backend-status") {
     return "/api/backends/status";
+  }
+
+  if (queryKey[0] === "public-content") {
+    return "/api/content/public-items";
   }
 
   return "/api/backends/briefs";
@@ -84,6 +92,11 @@ export function BoilerplateDashboard({ locale, messages }: BoilerplateDashboardP
   const briefsQuery = useQuery({
     queryKey: ["project-briefs"] as const,
     queryFn: fetchResult<ProjectBrief[]>,
+  });
+
+  const publicContentQuery = useQuery({
+    queryKey: ["public-content"] as const,
+    queryFn: fetchResult<PublicContentItem[]>,
   });
 
   const submitBrief = useMutation({
@@ -208,22 +221,22 @@ export function BoilerplateDashboard({ locale, messages }: BoilerplateDashboardP
                   <Switch checked={statusQuery.data.enabled.supabase} disabled />
                 </div>
                 <div className="flex items-center justify-between rounded-lg border border-dashed p-3">
-                  <span className="text-sm font-medium">Directus enabled</span>
-                  <Switch checked={statusQuery.data.enabled.directus} disabled />
+                  <span className="text-sm font-medium">Sanity enabled</span>
+                  <Switch checked={statusQuery.data.enabled.sanity} disabled />
                 </div>
                 <Separator />
                 <div className="space-y-2 text-sm">
                   <p>
-                    Primary backend: <strong>{statusQuery.data.primaryBackend}</strong>
+                    Operational source: <strong>{statusQuery.data.operationalSource}</strong>
                   </p>
                   <p>
-                    Active adapter: <strong>{statusQuery.data.activeSource}</strong>
+                    Content source: <strong>{statusQuery.data.contentSource}</strong>
                   </p>
                   <p className="text-muted-foreground">
                     Supabase configured: {String(statusQuery.data.configured.supabase)}
                   </p>
                   <p className="text-muted-foreground">
-                    Directus configured: {String(statusQuery.data.configured.directus)}
+                    Sanity configured: {String(statusQuery.data.configured.sanity)}
                   </p>
                 </div>
               </>
@@ -231,8 +244,8 @@ export function BoilerplateDashboard({ locale, messages }: BoilerplateDashboardP
           </CardContent>
           <CardFooter>
             <p className="text-xs text-muted-foreground">
-              If both connectors are disabled or unconfigured, requests fall back to in-memory mock
-              storage.
+              Supabase handles operational data, and Sanity is reserved for public content
+              management.
             </p>
           </CardFooter>
         </Card>
@@ -271,6 +284,55 @@ export function BoilerplateDashboard({ locale, messages }: BoilerplateDashboardP
               </p>
               <p className="mt-2 text-xs text-muted-foreground">
                 Updated {new Date(brief.updatedAt).toLocaleString()}
+              </p>
+            </article>
+          ))}
+        </CardContent>
+      </Card>
+
+      <Card className="border-border/80 shadow-sm">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <FileStack className="size-4" />
+            {locale === "ko" ? "Sanity 공개 콘텐츠" : "Sanity Public Content"}
+          </CardTitle>
+          <CardDescription>
+            {locale === "ko"
+              ? "GROQ 리포지토리 레이어를 통해 공개 콘텐츠를 조회합니다."
+              : "Reads public content through the GROQ repository layer."}
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {publicContentQuery.isLoading ? (
+            <p className="text-sm">
+              {locale === "ko" ? "콘텐츠 로딩 중..." : "Loading content..."}
+            </p>
+          ) : null}
+          {publicContentQuery.error ? (
+            <p className="text-sm text-destructive">{publicContentQuery.error.message}</p>
+          ) : null}
+
+          {(publicContentQuery.data ?? []).length === 0 ? (
+            <p className="rounded-md border border-dashed p-4 text-sm text-muted-foreground">
+              {locale === "ko"
+                ? "표시할 공개 콘텐츠가 없습니다. Sanity 문서를 추가해보세요."
+                : "No public content found. Add documents in Sanity."}
+            </p>
+          ) : null}
+
+          {(publicContentQuery.data ?? []).map((item) => (
+            <article key={item.id} className="rounded-xl border bg-card p-4">
+              <div className="flex items-center justify-between gap-3">
+                <h3 className="font-medium">{item.title}</h3>
+                <Badge variant="outline">{item.type}</Badge>
+              </div>
+              <p className="mt-2 text-sm text-muted-foreground">
+                {truncate(item.excerpt, {
+                  length: 160,
+                }) || "-"}
+              </p>
+              <p className="mt-2 text-xs text-muted-foreground">
+                Published {new Date(item.publishedAt).toLocaleString()}
               </p>
             </article>
           ))}

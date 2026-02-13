@@ -3,7 +3,10 @@ import "server-only";
 import type { BriefRepository } from "@/lib/backend/brief-repository";
 import type { ProjectBrief } from "@/lib/backend/project-brief";
 import { getErrorMessage, resultErr, resultOk } from "@/lib/contracts/result";
-import { getSupabaseServerClient } from "@/lib/supabase/server-client";
+import {
+  getSupabaseReadServerClient,
+  getSupabaseWriteServerClient,
+} from "@/lib/supabase/server-client";
 
 const TABLE_NAME = "project_briefs";
 
@@ -31,7 +34,7 @@ function mapSupabaseRow(row: SupabaseBriefRow): ProjectBrief {
 export function createSupabaseBriefRepository(): BriefRepository {
   return {
     async list() {
-      const client = getSupabaseServerClient();
+      const client = getSupabaseReadServerClient();
 
       if (!client) {
         return resultErr("NOT_CONFIGURED", "Supabase is enabled but not configured");
@@ -58,10 +61,13 @@ export function createSupabaseBriefRepository(): BriefRepository {
     },
 
     async create(input) {
-      const client = getSupabaseServerClient();
+      const client = getSupabaseWriteServerClient();
 
       if (!client) {
-        return resultErr("NOT_CONFIGURED", "Supabase is enabled but not configured");
+        return resultErr(
+          "NOT_CONFIGURED",
+          "Supabase write path requires SUPABASE_SERVICE_ROLE_KEY",
+        );
       }
 
       try {

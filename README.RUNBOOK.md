@@ -22,7 +22,7 @@ Request access in writing before receiving keys. Use least-privilege first.
   - `VERCEL_PROJECT_ID`
   - `VERCEL_TOKEN` (service token for CI)
 
-### Supabase
+### Supabase (Operational)
 
 - Request project access in client organization
 - Ask client to create a dedicated development project if production isolation is required
@@ -33,13 +33,15 @@ Request access in writing before receiving keys. Use least-privilege first.
   - `SUPABASE_DB_URL` (for provisioning script)
   - `SUPABASE_PROJECT_REF` (for MCP)
 
-### Directus
+### Sanity (Public Content CMS)
 
-- Request project URL and admin/operator account
-- Ask client to issue two tokens when possible:
-  - `DIRECTUS_TOKEN` (runtime use)
-  - `DIRECTUS_ADMIN_TOKEN` (schema provisioning)
-- Ask client to share `DIRECTUS_URL`
+- Request project access (or invite via project members)
+- Ask client to share:
+  - `NEXT_PUBLIC_SANITY_PROJECT_ID`
+  - `NEXT_PUBLIC_SANITY_DATASET`
+  - `NEXT_PUBLIC_SANITY_API_VERSION`
+  - `SANITY_API_TOKEN` (for server-side operations and MCP)
+  - `SANITY_STUDIO_URL` (optional)
 
 ## 2) Required Key Checklist
 
@@ -49,11 +51,12 @@ Minimum to run end-to-end:
   - `NEXT_PUBLIC_SUPABASE_URL`
   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
   - `SUPABASE_SERVICE_ROLE_KEY`
-  - `DIRECTUS_URL`
-  - `DIRECTUS_TOKEN`
+  - `NEXT_PUBLIC_SANITY_PROJECT_ID`
+  - `NEXT_PUBLIC_SANITY_DATASET`
+  - `NEXT_PUBLIC_SANITY_API_VERSION`
+  - `SANITY_API_TOKEN`
 - Provisioning:
   - `SUPABASE_DB_URL`
-  - `DIRECTUS_ADMIN_TOKEN`
 - SEO:
   - `NEXT_PUBLIC_SITE_URL`
 
@@ -77,8 +80,7 @@ Fill `.env.local` with client-provided values.
 Recommended feature flags for integrated mode:
 
 - `NEXT_PUBLIC_ENABLE_SUPABASE=true`
-- `NEXT_PUBLIC_ENABLE_DIRECTUS=true`
-- `NEXT_PUBLIC_PRIMARY_BACKEND=supabase`
+- `NEXT_PUBLIC_ENABLE_SANITY=true`
 
 Install and run:
 
@@ -96,13 +98,17 @@ pnpm run dev
 - Creates `created_at` index
 - Creates `updated_at` trigger function
 - Enables RLS on the table
+- Note: app write APIs use `SUPABASE_SERVICE_ROLE_KEY` intentionally.
 
-### Directus (`pnpm run provision:directus`)
+### Sanity (`pnpm run provision:sanity`)
 
-- Creates collection `project_briefs` (or `DIRECTUS_COLLECTION`)
-- Creates required fields:
-  - `title`
-  - `summary`
+- Validates connectivity to configured project/dataset
+- Verifies that runtime content fetch configuration is ready
+
+## 4.5) Sanity Content Routes Check
+
+- Visit `/{locale}/blog` and confirm public content list renders
+- Open one item in `/{locale}/blog/[slug]` and verify metadata/canonical
 
 ## 5) Auth + RBAC Verification
 
@@ -150,7 +156,7 @@ Behavior:
 ## 8) Security Rules
 
 - Never expose `SUPABASE_SERVICE_ROLE_KEY` in client bundle
-- Never expose `DIRECTUS_ADMIN_TOKEN` in frontend runtime
+- Never expose `SANITY_API_TOKEN` in frontend runtime
 - Keep keys only in `.env.local`, Vercel env, or GitHub Secrets
 - Rotate leaked keys immediately and invalidate old tokens
 

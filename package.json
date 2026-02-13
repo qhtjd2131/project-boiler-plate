@@ -12,12 +12,12 @@
     "format": "prettier . --write",
     "format:check": "prettier . --check",
     "provision:supabase": "tsx scripts/provision/supabase.ts",
-    "provision:directus": "tsx scripts/provision/directus.ts",
-    "provision:all": "pnpm run provision:supabase && pnpm run provision:directus"
+    "provision:sanity": "tsx scripts/provision/sanity.ts",
+    "provision:all": "pnpm run provision:supabase && pnpm run provision:sanity"
   },
   "dependencies": {
-    "@directus/sdk": "21.1.0",
     "@hookform/resolvers": "5.2.2",
+    "@sanity/client": "7.14.1",
     "@supabase/ssr": "0.8.0",
     "@supabase/supabase-js": "2.95.3",
     "@tanstack/react-query": "5.90.20",

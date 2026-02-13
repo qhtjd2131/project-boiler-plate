@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import { JetBrains_Mono, Manrope } from "next/font/google";
 
 import { SiteShell } from "@/components/layout/site-shell";
 import { GoogleAnalyticsProvider } from "@/components/providers/google-analytics-provider";
 import { QueryProvider } from "@/components/providers/query-provider";
+import { DEFAULT_LOCALE, isAppLocale } from "@/lib/i18n/config";
 import { getSiteUrl } from "@/lib/seo/site-url";
 
 import "./globals.css";
@@ -26,16 +28,20 @@ export const metadata: Metadata = {
     default: "External Delivery Boilerplate",
     template: "%s | External Delivery Boilerplate",
   },
-  description: "Next.js starter with shadcn/ui, Supabase, Directus, and OpenCode defaults.",
+  description: "Next.js starter with shadcn/ui, Supabase, Sanity, and OpenCode defaults.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const headerStore = await headers();
+  const localeFromHeader = headerStore.get("x-app-locale") || DEFAULT_LOCALE;
+  const htmlLang = isAppLocale(localeFromHeader) ? localeFromHeader : DEFAULT_LOCALE;
+
   return (
-    <html lang="en">
+    <html lang={htmlLang}>
       <body
         className={`${manrope.variable} ${jetBrainsMono.variable} min-h-screen bg-[radial-gradient(circle_at_top_right,_#f4f4f5,_transparent_42%),linear-gradient(180deg,_#fff,_#fafafa)] antialiased`}
       >

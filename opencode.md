@@ -11,8 +11,8 @@
 - 핵심 사용자/검색 의도:
 - 핵심 전환 이벤트(회원가입, 문의, 결제 등):
 - 필수 라우트 목록(예: `/`, `/{locale}/pricing`, `/{locale}/blog/[slug]`):
-- 콘텐츠 소스(정적/Directus 컬렉션명):
-- 백엔드 플래그(`supabase`, `directus`, `primary`):
+- 콘텐츠 소스(정적/Sanity 스키마):
+- 백엔드 플래그(`supabase`, `sanity`):
 - 분석 플래그(`google_analytics` on/off, 측정 ID 보유 여부):
 - 인증/권한 요구(비회원/회원/관리자):
 - 운영 도메인/지원 언어(예: `example.com`, `ko,en`):
@@ -29,7 +29,7 @@
 6. 다국어 URL 전략은 `/{locale}`로 확정인가? (예: `ko`, `en`)
 7. locale별 메타 title/description을 개별 운영할지 공용 템플릿을 쓸지?
 8. JSON-LD 유형은 무엇이 필요한가? (`Organization`, `WebSite`, `Article`, `FAQPage` 등)
-9. Directus에서 SEO 필드(`seo_title`, `seo_description`, `og_image`)를 운영할지?
+9. Sanity에서 SEO 필드(`seo_title`, `seo_description`, `og_image`)를 운영할지?
 10. 인증이 필요한 경로와 공개 경로를 어떻게 나눌지?
 11. RBAC 최소 역할 정책은 무엇인가? (`member`, `editor`, `admin`)
 12. 리다이렉트/레거시 URL 매핑이 필요한가?
@@ -39,8 +39,9 @@
 명시값이 없으면 아래 기본값으로 즉시 진행한다.
 
 - 인증: Supabase Auth 단일
-- 콘텐츠 운영: Directus 컬렉션 기반
+- 콘텐츠 운영: Sanity dataset 기반
 - 다국어: `ko`, `en`
+- 기본 언어: `ko`
 - URL 전략: `/{locale}`
 - canonical: `NEXT_PUBLIC_SITE_URL`
 - SEO 정책: 공개 페이지 index, 인증/개인화 페이지 noindex
@@ -50,8 +51,8 @@
 ## 4) 아키텍처 불변 규칙
 
 - Supabase는 인프라(Auth, DB, Storage) 담당
-- Directus는 운영 CMS 담당
-- 두 백엔드는 대체 관계가 아니라 역할 분담 구조로 구현
+- Sanity는 공개 콘텐츠 CMS 담당
+- Supabase와 Sanity는 대체 관계가 아니라 역할 분담 구조로 구현
 - 기능 플래그로 연결 여부를 제어하고, 미설정 시 안전한 fallback 제공
 
 ## 5) 코드 일관성 계약 (강제)
@@ -88,7 +89,7 @@
 
 - 필수 env 키는 `.env.example`와 동기화
 - 민감값은 클라이언트 번들 노출 금지
-- `DIRECTUS_ADMIN_TOKEN`, `SUPABASE_SERVICE_ROLE_KEY`는 서버 전용
+- `SANITY_API_TOKEN`, `SUPABASE_SERVICE_ROLE_KEY`는 서버 전용
 
 ### 릴리즈/운영
 
@@ -159,7 +160,7 @@
 ## 9) MCP 운영 규칙
 
 - OpenCode MCP는 단일 프로필(`opencode.json`) 기준
-- 기본 MCP: `supabase`, `directus`, `shadcn`
+- 기본 MCP: `supabase`, `sanity`, `shadcn`
 - 민감 프로젝트는 Supabase MCP를 `read_only + project_ref`로 제한
 
 ## 10) 고객 레퍼런스 링크 운영 규칙

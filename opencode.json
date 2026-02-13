@@ -7,13 +7,15 @@
       "url": "https://mcp.supabase.com/mcp?read_only=true&project_ref={env:SUPABASE_PROJECT_REF}",
       "enabled": true
     },
-    "directus": {
+    "sanity": {
       "type": "local",
-      "command": ["npx", "-y", "@directus/content-mcp@0.1.0"],
+      "command": ["npx", "-y", "@sanity/mcp-server@0.12.1"],
       "enabled": true,
       "environment": {
-        "DIRECTUS_URL": "{env:DIRECTUS_URL}",
-        "DIRECTUS_TOKEN": "{env:DIRECTUS_TOKEN}"
+        "SANITY_PROJECT_ID": "{env:NEXT_PUBLIC_SANITY_PROJECT_ID}",
+        "SANITY_DATASET": "{env:NEXT_PUBLIC_SANITY_DATASET}",
+        "SANITY_API_TOKEN": "{env:SANITY_API_TOKEN}",
+        "MCP_USER_ROLE": "developer"
       }
     },
     "shadcn": {

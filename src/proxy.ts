@@ -3,30 +3,39 @@ import { NextResponse, type NextRequest } from "next/server";
 import { getAuthGuardConfig } from "@/lib/auth/guard-config";
 import { findRouteAccessRule, hasMinimumRole, resolveRoleFromUser } from "@/lib/auth/rbac";
 import { resultErr } from "@/lib/contracts/result";
-import { getLocaleFromPathname, localizePathname } from "@/lib/i18n/config";
+import { DEFAULT_LOCALE, getLocaleFromPathname, localizePathname } from "@/lib/i18n/config";
 import { createSupabaseMiddlewareClient } from "@/lib/supabase/auth-middleware-client";
 
 const API_PREFIX = "/api/";
 
 export async function proxy(request: NextRequest) {
+  const requestHeaders = createForwardedHeaders(request);
   const config = getAuthGuardConfig();
 
   if (!config.enabled) {
-    return NextResponse.next();
+    return NextResponse.next({
+      request: {
+        headers: requestHeaders,
+      },
+    });
   }
 
   const pathname = request.nextUrl.pathname;
   const rule = findRouteAccessRule(pathname);
 
   if (!rule) {
-    return NextResponse.next();
+    return NextResponse.next({
+      request: {
+        headers: requestHeaders,
+      },
+    });
   }
 
   const {
     supabase,
     response: supabaseResponse,
     configured,
-  } = createSupabaseMiddlewareClient(request);
+  } = createSupabaseMiddlewareClient(request, requestHeaders);
 
   if (!configured || !supabase) {
     return rejectForMissingAuthConfig(request, supabaseResponse);
@@ -48,6 +57,14 @@ export async function proxy(request: NextRequest) {
   }
 
   return supabaseResponse;
+}
+
+function createForwardedHeaders(request: NextRequest): Headers {
+  const headers = new Headers(request.headers);
+  const locale = getLocaleFromPathname(request.nextUrl.pathname) ?? DEFAULT_LOCALE;
+
+  headers.set("x-app-locale", locale);
+  return headers;
 }
 
 function rejectForMissingAuthConfig(request: NextRequest, sourceResponse: NextResponse) {

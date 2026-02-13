@@ -1,10 +1,17 @@
 import type { DataSource } from "@/lib/contracts/result";
 
-export type BackendName = "supabase" | "directus";
+export type OperationalBackend = "supabase";
+export type ContentBackend = "sanity";
 
 export type BackendStatus = {
-  primaryBackend: BackendName;
-  activeSource: DataSource;
-  enabled: Record<BackendName, boolean>;
-  configured: Record<BackendName, boolean>;
+  operationalSource: DataSource;
+  contentSource: DataSource;
+  enabled: {
+    supabase: boolean;
+    sanity: boolean;
+  };
+  configured: {
+    supabase: boolean;
+    sanity: boolean;
+  };
 };
