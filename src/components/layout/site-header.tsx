@@ -6,18 +6,20 @@ import { usePathname } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
+  DEFAULT_LOCALE,
   getLocaleDisplayName,
   getLocaleFromPathname,
   localizePathname,
+  SUPPORTED_LOCALES,
   type AppLocale,
 } from "@/lib/i18n/config";
 import { getMessages } from "@/lib/i18n/messages";
 
-const localeSwitches: AppLocale[] = ["ko", "en"];
+const localeSwitches: AppLocale[] = [...SUPPORTED_LOCALES];
 
 export function SiteHeader() {
   const pathname = usePathname();
-  const locale = getLocaleFromPathname(pathname) ?? "ko";
+  const locale = getLocaleFromPathname(pathname) ?? DEFAULT_LOCALE;
   const messages = getMessages(locale);
 
   const navigation = [

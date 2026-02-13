@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { listSanityPublicContent } from "@/lib/backend/sanity-content-repository";
 import { isAppLocale, localizePathname, type AppLocale } from "@/lib/i18n/config";
+import { getMessages } from "@/lib/i18n/messages";
 import { createLocalizedMetadata } from "@/lib/seo/localized-metadata";
 
 type BlogListPageProps = {
@@ -19,14 +20,13 @@ export async function generateMetadata({ params }: BlogListPageProps): Promise<M
     return {};
   }
 
+  const messages = getMessages(locale);
+
   return createLocalizedMetadata({
     locale,
     pathname: "/blog",
-    title: locale === "ko" ? "콘텐츠" : "Content",
-    description:
-      locale === "ko"
-        ? "Sanity에서 운영되는 공개 콘텐츠 목록입니다."
-        : "Public content list managed in Sanity.",
+    title: messages.blogList.metaTitle,
+    description: messages.blogList.metaDescription,
   });
 }
 
@@ -37,6 +37,7 @@ export default async function BlogListPage({ params }: BlogListPageProps) {
     notFound();
   }
 
+  const messages = getMessages(locale);
   const result = await listSanityPublicContent();
   const items = result.ok ? result.data : [];
   const typedLocale = locale as AppLocale;
@@ -44,20 +45,14 @@ export default async function BlogListPage({ params }: BlogListPageProps) {
   return (
     <main className="flex w-full flex-col gap-6 px-4 py-8 tablet:px-6 laptop:px-8 desktop:px-12">
       <header className="space-y-2">
-        <h1 className="text-3xl font-semibold tracking-tight">
-          {locale === "ko" ? "공개 콘텐츠" : "Public Content"}
-        </h1>
-        <p className="text-sm text-muted-foreground">
-          {locale === "ko"
-            ? "Sanity CMS에서 관리하는 게시물을 미리 확인합니다."
-            : "Preview posts managed by Sanity CMS."}
-        </p>
+        <h1 className="text-3xl font-semibold tracking-tight">{messages.blogList.title}</h1>
+        <p className="text-sm text-muted-foreground">{messages.blogList.description}</p>
       </header>
 
       {!result.ok ? (
         <Card>
           <CardHeader>
-            <CardTitle>{locale === "ko" ? "연결 상태" : "Connection status"}</CardTitle>
+            <CardTitle>{messages.blogList.connectionStatusTitle}</CardTitle>
             <CardDescription>{result.error.message}</CardDescription>
           </CardHeader>
         </Card>
@@ -70,7 +65,7 @@ export default async function BlogListPage({ params }: BlogListPageProps) {
               <div className="flex items-center justify-between gap-2">
                 <Badge variant="outline">{item.type}</Badge>
                 <span className="text-xs text-muted-foreground">
-                  {new Date(item.publishedAt).toLocaleDateString()}
+                  {new Date(item.publishedAt).toLocaleDateString(locale)}
                 </span>
               </div>
               <CardTitle className="text-xl">

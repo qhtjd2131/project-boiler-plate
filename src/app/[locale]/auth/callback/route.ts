@@ -1,7 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-import { isAppLocale, localizePathname, type AppLocale } from "@/lib/i18n/config";
+import { DEFAULT_LOCALE, isAppLocale, localizePathname, type AppLocale } from "@/lib/i18n/config";
 
 function sanitizeNextPath(value: string | null, locale: AppLocale): string {
   if (!value || !value.startsWith("/")) {
@@ -17,7 +17,7 @@ type RouteContext = {
 
 export async function GET(request: NextRequest, context: RouteContext) {
   const { locale } = await context.params;
-  const safeLocale: AppLocale = isAppLocale(locale) ? locale : "ko";
+  const safeLocale: AppLocale = isAppLocale(locale) ? locale : DEFAULT_LOCALE;
 
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;

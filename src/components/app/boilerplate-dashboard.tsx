@@ -29,8 +29,8 @@ import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import {
   createProjectBriefSchema,
-  type ProjectBrief,
   type CreateProjectBriefInput,
+  type ProjectBrief,
 } from "@/lib/backend/project-brief";
 import type { PublicContentItem } from "@/lib/backend/public-content";
 import type { BackendStatus } from "@/lib/backend/types";
@@ -161,37 +161,31 @@ export function BoilerplateDashboard({ locale, messages }: BoilerplateDashboardP
               })}
             >
               <div className="space-y-2">
-                <Label htmlFor="title">Title</Label>
+                <Label htmlFor="title">{messages.dashboard.titleLabel}</Label>
                 <Input
                   id="title"
-                  placeholder={
-                    locale === "ko"
-                      ? "이커머스 클라이언트 랜딩 페이지 개편"
-                      : "Landing page revamp for ecommerce client"
-                  }
+                  placeholder={messages.dashboard.titlePlaceholder}
                   {...form.register("title")}
                 />
-                <p className="text-xs text-muted-foreground">Slug preview: {slugPreview}</p>
+                <p className="text-xs text-muted-foreground">
+                  {messages.dashboard.slugPreviewLabel}: {slugPreview}
+                </p>
                 <p className="text-xs text-destructive">{form.formState.errors.title?.message}</p>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="summary">Summary</Label>
+                <Label htmlFor="summary">{messages.dashboard.summaryLabel}</Label>
                 <Textarea
                   id="summary"
                   rows={6}
-                  placeholder={
-                    locale === "ko"
-                      ? "프로젝트 목표, 대상 사용자, 일정, 성공 기준을 작성하세요."
-                      : "Define goal, audience, timeline, and success criteria for the project."
-                  }
+                  placeholder={messages.dashboard.summaryPlaceholder}
                   {...form.register("summary")}
                 />
                 <p className="text-xs text-destructive">{form.formState.errors.summary?.message}</p>
               </div>
 
               <Button type="submit" disabled={submitBrief.isPending}>
-                {submitBrief.isPending ? "Saving..." : "Save Brief"}
+                {submitBrief.isPending ? messages.dashboard.saving : messages.dashboard.saveBrief}
               </Button>
 
               {submitBrief.error ? (
@@ -267,7 +261,7 @@ export function BoilerplateDashboard({ locale, messages }: BoilerplateDashboardP
 
           {(briefsQuery.data ?? []).length === 0 ? (
             <p className="rounded-md border border-dashed p-4 text-sm text-muted-foreground">
-              No briefs yet. Save one from the form above.
+              {messages.dashboard.noBriefs}
             </p>
           ) : null}
 
@@ -283,7 +277,7 @@ export function BoilerplateDashboard({ locale, messages }: BoilerplateDashboardP
                 })}
               </p>
               <p className="mt-2 text-xs text-muted-foreground">
-                Updated {new Date(brief.updatedAt).toLocaleString()}
+                Updated {new Date(brief.updatedAt).toLocaleString(locale)}
               </p>
             </article>
           ))}
@@ -294,19 +288,13 @@ export function BoilerplateDashboard({ locale, messages }: BoilerplateDashboardP
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <FileStack className="size-4" />
-            {locale === "ko" ? "Sanity 공개 콘텐츠" : "Sanity Public Content"}
+            {messages.dashboard.sanityPublicContentTitle}
           </CardTitle>
-          <CardDescription>
-            {locale === "ko"
-              ? "GROQ 리포지토리 레이어를 통해 공개 콘텐츠를 조회합니다."
-              : "Reads public content through the GROQ repository layer."}
-          </CardDescription>
+          <CardDescription>{messages.dashboard.sanityPublicContentDescription}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           {publicContentQuery.isLoading ? (
-            <p className="text-sm">
-              {locale === "ko" ? "콘텐츠 로딩 중..." : "Loading content..."}
-            </p>
+            <p className="text-sm">{messages.dashboard.sanityLoading}</p>
           ) : null}
           {publicContentQuery.error ? (
             <p className="text-sm text-destructive">{publicContentQuery.error.message}</p>
@@ -314,9 +302,7 @@ export function BoilerplateDashboard({ locale, messages }: BoilerplateDashboardP
 
           {(publicContentQuery.data ?? []).length === 0 ? (
             <p className="rounded-md border border-dashed p-4 text-sm text-muted-foreground">
-              {locale === "ko"
-                ? "표시할 공개 콘텐츠가 없습니다. Sanity 문서를 추가해보세요."
-                : "No public content found. Add documents in Sanity."}
+              {messages.dashboard.sanityEmpty}
             </p>
           ) : null}
 
@@ -332,7 +318,8 @@ export function BoilerplateDashboard({ locale, messages }: BoilerplateDashboardP
                 }) || "-"}
               </p>
               <p className="mt-2 text-xs text-muted-foreground">
-                Published {new Date(item.publishedAt).toLocaleString()}
+                {messages.dashboard.sanityPublishedPrefix}{" "}
+                {new Date(item.publishedAt).toLocaleString(locale)}
               </p>
             </article>
           ))}

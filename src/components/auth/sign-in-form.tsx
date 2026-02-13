@@ -87,16 +87,12 @@ export function SignInForm({ locale }: SignInFormProps) {
         {error ? <p className="text-sm text-destructive">{error}</p> : null}
 
         <p className="text-xs text-muted-foreground">
-          {locale === "ko"
-            ? `로그인 후 이동 경로: ${nextPath}`
-            : `After sign-in, redirect path: ${nextPath}`}
+          {messages.auth.redirectPathLabel}: {nextPath}
         </p>
 
         <div>
           <Button variant="ghost" asChild>
-            <Link href={localizePathname("/", locale)}>
-              {locale === "ko" ? "홈으로" : "Back to home"}
-            </Link>
+            <Link href={localizePathname("/", locale)}>{messages.common.backToHome}</Link>
           </Button>
         </div>
       </CardContent>

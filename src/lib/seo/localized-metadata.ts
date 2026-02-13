@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 
-import { localizePathname, SUPPORTED_LOCALES, type AppLocale } from "@/lib/i18n/config";
+import {
+  getOpenGraphLocale,
+  localizePathname,
+  SUPPORTED_LOCALES,
+  type AppLocale,
+} from "@/lib/i18n/config";
 import { getSiteUrl } from "@/lib/seo/site-url";
-
-const localeMap: Record<AppLocale, string> = {
-  ko: "ko_KR",
-  en: "en_US",
-};
 
 type LocalizedMetadataInput = {
   locale: AppLocale;
@@ -38,7 +38,7 @@ export function createLocalizedMetadata(input: LocalizedMetadataInput): Metadata
     },
     openGraph: {
       type: "website",
-      locale: localeMap[input.locale],
+      locale: getOpenGraphLocale(input.locale),
       title: input.title,
       description: input.description,
       url: canonicalUrl,

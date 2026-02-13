@@ -1,10 +1,29 @@
-export const SUPPORTED_LOCALES = ["ko", "en"] as const;
-export type AppLocale = (typeof SUPPORTED_LOCALES)[number];
+const LOCALE_CONFIG = {
+  ko: {
+    displayName: "한국어",
+    openGraphLocale: "ko_KR",
+  },
+  en: {
+    displayName: "English",
+    openGraphLocale: "en_US",
+  },
+} as const;
+
+export type AppLocale = keyof typeof LOCALE_CONFIG;
+export const SUPPORTED_LOCALES = Object.keys(LOCALE_CONFIG) as AppLocale[];
 
 export const DEFAULT_LOCALE: AppLocale = "ko";
 
 export function isAppLocale(value: string): value is AppLocale {
-  return SUPPORTED_LOCALES.includes(value as AppLocale);
+  return value in LOCALE_CONFIG;
+}
+
+export function resolveAppLocale(value: string | null | undefined): AppLocale {
+  if (!value) {
+    return DEFAULT_LOCALE;
+  }
+
+  return isAppLocale(value) ? value : DEFAULT_LOCALE;
 }
 
 export function getLocaleFromPathname(pathname: string): AppLocale | null {
@@ -40,9 +59,9 @@ export function localizePathname(pathname: string, locale: AppLocale): string {
 }
 
 export function getLocaleDisplayName(locale: AppLocale): string {
-  if (locale === "ko") {
-    return "한국어";
-  }
+  return LOCALE_CONFIG[locale].displayName;
+}
 
-  return "English";
+export function getOpenGraphLocale(locale: AppLocale): string {
+  return LOCALE_CONFIG[locale].openGraphLocale;
 }

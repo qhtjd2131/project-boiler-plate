@@ -25,12 +25,21 @@
 예: `ja` 추가
 
 1. `src/lib/i18n/config.ts`
-   - `SUPPORTED_LOCALES`에 `ja` 추가
-   - 표시명 함수 업데이트
+   - `LOCALE_CONFIG`에 `ja` 항목 추가
+   - `displayName`, `openGraphLocale` 정의
 2. `src/lib/i18n/messages.ts`
-   - `ja` 메시지 사전 추가
+   - `messages.ja` 사전 추가
+   - `AppMessages` 타입 계약에 맞춰 키를 빠짐없이 채움
 3. locale별 페이지 `generateStaticParams`/metadata 확인
+   - `SUPPORTED_LOCALES`는 `LOCALE_CONFIG`에서 자동 생성됨
 4. `sitemap.ts` hreflang 확장 확인
+
+## 3.5) 텍스트 매칭 로직 규칙
+
+- `locale === "ko" ? ... : ...` 같은 2분기 하드코딩을 사용하지 않는다.
+- 모든 사용자 노출 텍스트는 `getMessages(locale)` 기반으로 조회한다.
+- fallback은 `DEFAULT_LOCALE`(`ko`)로 통일한다.
+- 새 언어 추가 시 컴포넌트 로직 수정 없이 메시지 사전 확장만으로 동작해야 한다.
 
 ## 4) SEO 동기화 규칙
 

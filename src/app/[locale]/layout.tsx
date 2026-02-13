@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 
 import { notFound } from "next/navigation";
 
-import { isAppLocale } from "@/lib/i18n/config";
+import { isAppLocale, SUPPORTED_LOCALES } from "@/lib/i18n/config";
 
 type LocaleLayoutProps = {
   children: ReactNode;
@@ -10,7 +10,7 @@ type LocaleLayoutProps = {
 };
 
 export function generateStaticParams() {
-  return [{ locale: "ko" }, { locale: "en" }];
+  return SUPPORTED_LOCALES.map((locale) => ({ locale }));
 }
 
 export default async function LocaleLayout({ children, params }: LocaleLayoutProps) {
