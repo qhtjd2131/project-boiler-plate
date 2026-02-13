@@ -89,7 +89,7 @@
 
 - 필수 env 키는 `.env.example`와 동기화
 - 민감값은 클라이언트 번들 노출 금지
-- `SANITY_API_TOKEN`, `SUPABASE_SERVICE_ROLE_KEY`는 서버 전용
+- `SANITY_API_TOKEN`, `SUPABASE_SECRET_KEY`는 서버 전용
 
 ### 릴리즈/운영
 

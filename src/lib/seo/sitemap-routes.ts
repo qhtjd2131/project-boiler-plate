@@ -2,6 +2,7 @@ import { readdir } from "node:fs/promises";
 import path from "node:path";
 
 import { stripLocaleFromPathname, SUPPORTED_LOCALES } from "@/lib/i18n/config";
+import { getSanityStudioPath } from "@/lib/sanity/studio-path";
 
 const PAGE_FILE_PATTERN = /^page\.(ts|tsx|js|jsx|mdx)$/;
 const LOCALE_TOKEN = "__LOCALE__";
@@ -113,8 +114,13 @@ function expandRouteTemplate(template: string): string[] {
 
 function isSitemapEligible(route: string): boolean {
   const baseRoute = stripLocaleFromPathname(route);
+  const studioPath = getSanityStudioPath();
+  const privatePrefixes =
+    studioPath === "/admin"
+      ? ["/auth", "/forbidden", "/app", "/admin"]
+      : ["/auth", "/forbidden", "/app", "/admin", studioPath];
 
-  return !["/auth", "/forbidden", "/app"].some(
+  return !privatePrefixes.some(
     (prefix) => baseRoute === prefix || baseRoute.startsWith(`${prefix}/`),
   );
 }

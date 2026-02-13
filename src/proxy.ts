@@ -64,6 +64,7 @@ function createForwardedHeaders(request: NextRequest): Headers {
   const locale = getLocaleFromPathname(request.nextUrl.pathname) ?? DEFAULT_LOCALE;
 
   headers.set("x-app-locale", locale);
+  headers.set("x-app-pathname", request.nextUrl.pathname);
   return headers;
 }
 
@@ -74,7 +75,7 @@ function rejectForMissingAuthConfig(request: NextRequest, sourceResponse: NextRe
         resultErr(
           "NOT_CONFIGURED",
           "Auth guard is enabled but Supabase auth is not configured",
-          "Check NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY",
+          "Check NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY",
         ),
         { status: 500 },
       ),

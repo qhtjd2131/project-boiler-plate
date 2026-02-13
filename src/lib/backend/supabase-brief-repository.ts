@@ -8,7 +8,7 @@ import {
   getSupabaseWriteServerClient,
 } from "@/lib/supabase/server-client";
 
-const TABLE_NAME = "project_briefs";
+const TABLE_NAME = resolveBriefTableName();
 
 type SupabaseBriefRow = {
   id: string | number;
@@ -64,10 +64,7 @@ export function createSupabaseBriefRepository(): BriefRepository {
       const client = getSupabaseWriteServerClient();
 
       if (!client) {
-        return resultErr(
-          "NOT_CONFIGURED",
-          "Supabase write path requires SUPABASE_SERVICE_ROLE_KEY",
-        );
+        return resultErr("NOT_CONFIGURED", "Supabase write path requires SUPABASE_SECRET_KEY");
       }
 
       try {
@@ -90,4 +87,18 @@ export function createSupabaseBriefRepository(): BriefRepository {
       }
     },
   };
+}
+
+function resolveBriefTableName(): string {
+  const rawTableName = process.env.SUPABASE_BRIEF_TABLE?.trim();
+
+  if (!rawTableName) {
+    return "project_briefs";
+  }
+
+  if (!/^[a-zA-Z_][a-zA-Z0-9_]*$/.test(rawTableName)) {
+    return "project_briefs";
+  }
+
+  return rawTableName;
 }

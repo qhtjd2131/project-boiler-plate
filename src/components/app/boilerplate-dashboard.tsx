@@ -89,14 +89,22 @@ export function BoilerplateDashboard({ locale, messages }: BoilerplateDashboardP
     queryFn: fetchResult<BackendStatus>,
   });
 
+  const supabaseReady = statusQuery.data?.operationalSource === "supabase";
+  const supabaseDisabled = statusQuery.data ? !statusQuery.data.enabled.supabase : false;
+
+  const sanityReady = statusQuery.data?.contentSource === "sanity";
+  const sanityDisabled = statusQuery.data ? !statusQuery.data.enabled.sanity : false;
+
   const briefsQuery = useQuery({
     queryKey: ["project-briefs"] as const,
     queryFn: fetchResult<ProjectBrief[]>,
+    enabled: supabaseReady,
   });
 
   const publicContentQuery = useQuery({
     queryKey: ["public-content"] as const,
     queryFn: fetchResult<PublicContentItem[]>,
+    enabled: sanityReady,
   });
 
   const submitBrief = useMutation({
@@ -122,6 +130,8 @@ export function BoilerplateDashboard({ locale, messages }: BoilerplateDashboardP
       await queryClient.invalidateQueries({ queryKey: ["project-briefs"] });
     },
   });
+
+  const isBriefFormDisabled = statusQuery.isLoading || !supabaseReady || submitBrief.isPending;
 
   const title = useWatch({
     control: form.control,
@@ -165,6 +175,7 @@ export function BoilerplateDashboard({ locale, messages }: BoilerplateDashboardP
                 <Input
                   id="title"
                   placeholder={messages.dashboard.titlePlaceholder}
+                  disabled={isBriefFormDisabled}
                   {...form.register("title")}
                 />
                 <p className="text-xs text-muted-foreground">
@@ -179,14 +190,23 @@ export function BoilerplateDashboard({ locale, messages }: BoilerplateDashboardP
                   id="summary"
                   rows={6}
                   placeholder={messages.dashboard.summaryPlaceholder}
+                  disabled={isBriefFormDisabled}
                   {...form.register("summary")}
                 />
                 <p className="text-xs text-destructive">{form.formState.errors.summary?.message}</p>
               </div>
 
-              <Button type="submit" disabled={submitBrief.isPending}>
+              <Button type="submit" disabled={isBriefFormDisabled}>
                 {submitBrief.isPending ? messages.dashboard.saving : messages.dashboard.saveBrief}
               </Button>
+
+              {!statusQuery.isLoading && !supabaseReady ? (
+                <p className="text-sm text-amber-700">
+                  {supabaseDisabled
+                    ? messages.dashboard.supabaseDisabledNotice
+                    : messages.dashboard.supabaseNotConfiguredNotice}
+                </p>
+              ) : null}
 
               {submitBrief.error ? (
                 <p className="text-sm text-destructive">{submitBrief.error.message}</p>
@@ -232,6 +252,14 @@ export function BoilerplateDashboard({ locale, messages }: BoilerplateDashboardP
                   <p className="text-muted-foreground">
                     Sanity configured: {String(statusQuery.data.configured.sanity)}
                   </p>
+                  <p className="text-muted-foreground">
+                    {messages.dashboard.briefStorageModeLabel}:{" "}
+                    <strong>
+                      {supabaseReady
+                        ? messages.dashboard.briefStorageSupabase
+                        : messages.dashboard.briefStorageMock}
+                    </strong>
+                  </p>
                 </div>
               </>
             ) : null}
@@ -254,33 +282,44 @@ export function BoilerplateDashboard({ locale, messages }: BoilerplateDashboardP
           <CardDescription>{messages.dashboard.recentDescription}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          {briefsQuery.isLoading ? <p className="text-sm">Loading briefs...</p> : null}
-          {briefsQuery.error ? (
+          {!statusQuery.isLoading && !supabaseReady ? (
+            <p className="rounded-md border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
+              {supabaseDisabled
+                ? messages.dashboard.supabaseDisabledNotice
+                : messages.dashboard.supabaseNotConfiguredNotice}
+            </p>
+          ) : null}
+
+          {supabaseReady && briefsQuery.isLoading ? (
+            <p className="text-sm">Loading briefs...</p>
+          ) : null}
+          {supabaseReady && briefsQuery.error ? (
             <p className="text-sm text-destructive">{briefsQuery.error.message}</p>
           ) : null}
 
-          {(briefsQuery.data ?? []).length === 0 ? (
+          {supabaseReady && (briefsQuery.data ?? []).length === 0 ? (
             <p className="rounded-md border border-dashed p-4 text-sm text-muted-foreground">
               {messages.dashboard.noBriefs}
             </p>
           ) : null}
 
-          {(briefsQuery.data ?? []).map((brief) => (
-            <article key={brief.id} className="rounded-xl border bg-card p-4">
-              <div className="flex items-center justify-between gap-4">
-                <h3 className="font-medium">{brief.title}</h3>
-                <Badge variant="outline">{brief.source}</Badge>
-              </div>
-              <p className="mt-2 text-sm text-muted-foreground">
-                {truncate(brief.summary, {
-                  length: 180,
-                })}
-              </p>
-              <p className="mt-2 text-xs text-muted-foreground">
-                Updated {new Date(brief.updatedAt).toLocaleString(locale)}
-              </p>
-            </article>
-          ))}
+          {supabaseReady &&
+            (briefsQuery.data ?? []).map((brief) => (
+              <article key={brief.id} className="rounded-xl border bg-card p-4">
+                <div className="flex items-center justify-between gap-4">
+                  <h3 className="font-medium">{brief.title}</h3>
+                  <Badge variant="outline">{brief.source}</Badge>
+                </div>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  {truncate(brief.summary, {
+                    length: 180,
+                  })}
+                </p>
+                <p className="mt-2 text-xs text-muted-foreground">
+                  Updated {new Date(brief.updatedAt).toLocaleString(locale)}
+                </p>
+              </article>
+            ))}
         </CardContent>
       </Card>
 
@@ -293,36 +332,45 @@ export function BoilerplateDashboard({ locale, messages }: BoilerplateDashboardP
           <CardDescription>{messages.dashboard.sanityPublicContentDescription}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          {publicContentQuery.isLoading ? (
+          {!statusQuery.isLoading && !sanityReady ? (
+            <p className="rounded-md border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
+              {sanityDisabled
+                ? messages.dashboard.sanityDisabledNotice
+                : messages.dashboard.sanityNotConfiguredNotice}
+            </p>
+          ) : null}
+
+          {sanityReady && publicContentQuery.isLoading ? (
             <p className="text-sm">{messages.dashboard.sanityLoading}</p>
           ) : null}
-          {publicContentQuery.error ? (
+          {sanityReady && publicContentQuery.error ? (
             <p className="text-sm text-destructive">{publicContentQuery.error.message}</p>
           ) : null}
 
-          {(publicContentQuery.data ?? []).length === 0 ? (
+          {sanityReady && (publicContentQuery.data ?? []).length === 0 ? (
             <p className="rounded-md border border-dashed p-4 text-sm text-muted-foreground">
               {messages.dashboard.sanityEmpty}
             </p>
           ) : null}
 
-          {(publicContentQuery.data ?? []).map((item) => (
-            <article key={item.id} className="rounded-xl border bg-card p-4">
-              <div className="flex items-center justify-between gap-3">
-                <h3 className="font-medium">{item.title}</h3>
-                <Badge variant="outline">{item.type}</Badge>
-              </div>
-              <p className="mt-2 text-sm text-muted-foreground">
-                {truncate(item.excerpt, {
-                  length: 160,
-                }) || "-"}
-              </p>
-              <p className="mt-2 text-xs text-muted-foreground">
-                {messages.dashboard.sanityPublishedPrefix}{" "}
-                {new Date(item.publishedAt).toLocaleString(locale)}
-              </p>
-            </article>
-          ))}
+          {sanityReady &&
+            (publicContentQuery.data ?? []).map((item) => (
+              <article key={item.id} className="rounded-xl border bg-card p-4">
+                <div className="flex items-center justify-between gap-3">
+                  <h3 className="font-medium">{item.title}</h3>
+                  <Badge variant="outline">{item.type}</Badge>
+                </div>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  {truncate(item.excerpt, {
+                    length: 160,
+                  }) || "-"}
+                </p>
+                <p className="mt-2 text-xs text-muted-foreground">
+                  {messages.dashboard.sanityPublishedPrefix}{" "}
+                  {new Date(item.publishedAt).toLocaleString(locale)}
+                </p>
+              </article>
+            ))}
         </CardContent>
       </Card>
     </main>

@@ -1,7 +1,7 @@
 import "server-only";
 
 import type { DataSource } from "@/lib/contracts/result";
-import { getPublicBackendFlags, getPublicEnv } from "@/lib/env/public";
+import { getPublicBackendFlags, getPublicEnv, getSupabasePublicKey } from "@/lib/env/public";
 
 import type { BackendStatus } from "@/lib/backend/types";
 
@@ -11,7 +11,9 @@ export function getBackendStatus(): BackendStatus {
 
   const configured = {
     supabase: Boolean(
-      publicEnv.NEXT_PUBLIC_SUPABASE_URL && publicEnv.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+      publicEnv.NEXT_PUBLIC_SUPABASE_PROJECT_ID &&
+      publicEnv.NEXT_PUBLIC_SUPABASE_URL &&
+      getSupabasePublicKey(publicEnv),
     ),
     sanity: Boolean(
       publicEnv.NEXT_PUBLIC_SANITY_PROJECT_ID &&

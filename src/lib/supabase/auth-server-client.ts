@@ -4,17 +4,20 @@ import { createServerClient } from "@supabase/ssr";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
 
-export async function getSupabaseAuthServerClient(): Promise<SupabaseClient | null> {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+import { getPublicEnv, getSupabasePublicKey } from "@/lib/env/public";
 
-  if (!supabaseUrl || !supabaseAnonKey) {
+export async function getSupabaseAuthServerClient(): Promise<SupabaseClient | null> {
+  const publicEnv = getPublicEnv();
+  const supabaseUrl = publicEnv.NEXT_PUBLIC_SUPABASE_URL;
+  const supabasePublicKey = getSupabasePublicKey(publicEnv);
+
+  if (!supabaseUrl || !supabasePublicKey) {
     return null;
   }
 
   const cookieStore = await cookies();
 
-  return createServerClient(supabaseUrl, supabaseAnonKey, {
+  return createServerClient(supabaseUrl, supabasePublicKey, {
     cookies: {
       getAll() {
         return cookieStore.getAll();

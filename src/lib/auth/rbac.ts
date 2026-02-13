@@ -1,6 +1,7 @@
 import type { User } from "@supabase/supabase-js";
 
 import { stripLocaleFromPathname } from "@/lib/i18n/config";
+import { getSanityStudioPath } from "@/lib/sanity/studio-path";
 
 export type AppRole = "guest" | "member" | "editor" | "admin";
 
@@ -37,15 +38,26 @@ export type RouteAccessRule = {
 
 export const ROUTE_ACCESS_RULES: RouteAccessRule[] = [
   { prefix: "/app", minRole: "member" },
-  { prefix: "/admin", minRole: "admin" },
   { prefix: "/api/private", minRole: "member" },
   { prefix: "/api/admin", minRole: "admin" },
 ];
 
+function getRouteAccessRules(): RouteAccessRule[] {
+  const studioPath = getSanityStudioPath();
+
+  return studioPath === "/admin"
+    ? [...ROUTE_ACCESS_RULES, { prefix: "/admin", minRole: "admin" }]
+    : [
+        ...ROUTE_ACCESS_RULES,
+        { prefix: "/admin", minRole: "admin" },
+        { prefix: studioPath, minRole: "admin" },
+      ];
+}
+
 export function findRouteAccessRule(pathname: string): RouteAccessRule | null {
   const normalizedPathname = stripLocaleFromPathname(pathname);
 
-  for (const rule of ROUTE_ACCESS_RULES) {
+  for (const rule of getRouteAccessRules()) {
     if (normalizedPathname === rule.prefix || normalizedPathname.startsWith(`${rule.prefix}/`)) {
       return rule;
     }

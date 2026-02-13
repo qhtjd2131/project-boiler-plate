@@ -14,9 +14,10 @@
 
 ```env
 NEXT_PUBLIC_ENABLE_SUPABASE=true
+NEXT_PUBLIC_SUPABASE_PROJECT_ID=
 NEXT_PUBLIC_SUPABASE_URL=
-NEXT_PUBLIC_SUPABASE_ANON_KEY=
-SUPABASE_SERVICE_ROLE_KEY=
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=
+SUPABASE_SECRET_KEY=
 
 SUPABASE_DB_URL=
 SUPABASE_BRIEF_TABLE=project_briefs
@@ -36,20 +37,22 @@ pnpm run provision:supabase
 - `created_at` 인덱스 생성
 - `updated_at` 자동 갱신 트리거 생성
 - RLS 활성화
+- 앱 런타임 briefs 리포지토리도 `SUPABASE_BRIEF_TABLE` 값을 사용
 
 ## 4) 인증(Auth) 설정
 
 - Auth Provider는 기본 Supabase OTP(Magic Link)로 구현되어 있다.
 - Redirect URL에 다음 경로를 포함한다.
+  - `https://<domain>/auth/callback`
   - `https://<domain>/<locale>/auth/callback`
-  - 로컬: `http://localhost:3000/ko/auth/callback`, `http://localhost:3000/en/auth/callback`
+  - 로컬: `http://localhost:3000/auth/callback`, `http://localhost:3000/ko/auth/callback`, `http://localhost:3000/en/auth/callback`
 
 ## 5) 권한(RBAC) 정책 연결
 
 기본 보호 경로:
 
 - `/{locale}/app` -> `member` 이상
-- `/{locale}/admin` -> `admin`
+- `NEXT_PUBLIC_SANITY_STUDIO_PATH`(기본 `/admin`) -> `admin`
 - `/api/private/*` -> `member` 이상
 - `/api/admin/*` -> `admin`
 
@@ -62,9 +65,10 @@ pnpm run provision:supabase
 
 ## 6) 운영 DB write 안정성 규칙
 
-- 서버 write API는 `SUPABASE_SERVICE_ROLE_KEY`가 있어야 동작한다.
-- 이 키가 없으면 쓰기 API는 `NOT_CONFIGURED`를 반환한다.
-- 이유: anon key + RLS 조합에서 프로젝트별 실패 편차를 방지하기 위함.
+- 서버 write API는 privileged 키가 있어야 동작한다.
+  - `SUPABASE_SECRET_KEY`
+- privileged 키가 없으면 쓰기 API는 `NOT_CONFIGURED`를 반환한다.
+- 이유: 공개 키 + RLS 조합에서 프로젝트별 실패 편차를 방지하기 위함.
 
 ## 7) Storage 사용 시 권장
 

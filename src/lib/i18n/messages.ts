@@ -27,11 +27,18 @@ export type AppMessages = {
     saveBrief: string;
     saving: string;
     noBriefs: string;
+    briefStorageModeLabel: string;
+    briefStorageSupabase: string;
+    briefStorageMock: string;
+    supabaseDisabledNotice: string;
+    supabaseNotConfiguredNotice: string;
     sanityPublicContentTitle: string;
     sanityPublicContentDescription: string;
     sanityLoading: string;
     sanityEmpty: string;
     sanityPublishedPrefix: string;
+    sanityDisabledNotice: string;
+    sanityNotConfiguredNotice: string;
   };
   auth: {
     signInTitle: string;
@@ -102,11 +109,22 @@ const messages: Record<AppLocale, AppMessages> = {
       saveBrief: "브리프 저장",
       saving: "저장 중...",
       noBriefs: "아직 브리프가 없습니다. 위 폼에서 새 브리프를 저장하세요.",
+      briefStorageModeLabel: "브리프 저장 모드",
+      briefStorageSupabase: "Supabase 영구 저장",
+      briefStorageMock: "대시보드 저장 비활성화(Supabase 설정 필요)",
+      supabaseDisabledNotice:
+        "Supabase 플래그가 꺼져 있어 브리프 저장 기능을 비활성화했습니다. NEXT_PUBLIC_ENABLE_SUPABASE=true로 켜세요.",
+      supabaseNotConfiguredNotice:
+        "Supabase 플래그는 켜져 있지만 런타임 키가 누락되어 브리프 저장 기능을 비활성화했습니다. NEXT_PUBLIC_SUPABASE_PROJECT_ID, NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY를 확인하세요.",
       sanityPublicContentTitle: "Sanity 공개 콘텐츠",
       sanityPublicContentDescription: "GROQ 리포지토리 레이어를 통해 공개 콘텐츠를 조회합니다.",
       sanityLoading: "콘텐츠 로딩 중...",
       sanityEmpty: "표시할 공개 콘텐츠가 없습니다. Sanity 문서를 추가해보세요.",
       sanityPublishedPrefix: "게시일",
+      sanityDisabledNotice:
+        "Sanity 플래그가 꺼져 있어 콘텐츠 목록을 숨깁니다. NEXT_PUBLIC_ENABLE_SANITY=true로 켜세요.",
+      sanityNotConfiguredNotice:
+        "Sanity 플래그는 켜져 있지만 프로젝트 설정이 누락되어 콘텐츠 목록을 숨깁니다. NEXT_PUBLIC_SANITY_PROJECT_ID, NEXT_PUBLIC_SANITY_DATASET, NEXT_PUBLIC_SANITY_API_VERSION을 확인하세요.",
     },
     auth: {
       signInTitle: "로그인",
@@ -175,11 +193,22 @@ const messages: Record<AppLocale, AppMessages> = {
       saveBrief: "Save Brief",
       saving: "Saving...",
       noBriefs: "No briefs yet. Save one from the form above.",
+      briefStorageModeLabel: "Brief storage mode",
+      briefStorageSupabase: "Supabase persistent storage",
+      briefStorageMock: "Dashboard save disabled (Supabase setup required)",
+      supabaseDisabledNotice:
+        "Supabase flag is off, so brief saving is disabled. Set NEXT_PUBLIC_ENABLE_SUPABASE=true.",
+      supabaseNotConfiguredNotice:
+        "Supabase flag is on but runtime keys are missing, so brief saving is disabled. Check NEXT_PUBLIC_SUPABASE_PROJECT_ID, NEXT_PUBLIC_SUPABASE_URL, and NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY.",
       sanityPublicContentTitle: "Sanity Public Content",
       sanityPublicContentDescription: "Reads public content through the GROQ repository layer.",
       sanityLoading: "Loading content...",
       sanityEmpty: "No public content found. Add documents in Sanity.",
       sanityPublishedPrefix: "Published",
+      sanityDisabledNotice:
+        "Sanity flag is off, so content list is hidden. Set NEXT_PUBLIC_ENABLE_SANITY=true.",
+      sanityNotConfiguredNotice:
+        "Sanity flag is on but project settings are missing, so content list is hidden. Check NEXT_PUBLIC_SANITY_PROJECT_ID, NEXT_PUBLIC_SANITY_DATASET, and NEXT_PUBLIC_SANITY_API_VERSION.",
     },
     auth: {
       signInTitle: "Sign In",

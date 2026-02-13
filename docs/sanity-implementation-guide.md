@@ -17,8 +17,8 @@ NEXT_PUBLIC_ENABLE_SANITY=true
 NEXT_PUBLIC_SANITY_PROJECT_ID=
 NEXT_PUBLIC_SANITY_DATASET=production
 NEXT_PUBLIC_SANITY_API_VERSION=2025-02-19
+NEXT_PUBLIC_SANITY_STUDIO_PATH=/admin
 SANITY_API_TOKEN=
-SANITY_STUDIO_URL=
 ```
 
 ## 3) 연결 검증
@@ -41,6 +41,24 @@ pnpm run provision:sanity
 - 화면 예시:
   - `/{locale}/blog`
   - `/{locale}/blog/[slug]`
+
+## 4.5) 임베디드 Studio (상대경로 기반)
+
+이 템플릿은 `next-sanity` 기반 Studio를 동일 도메인 하위경로에 포함한다.
+
+- 경로: `NEXT_PUBLIC_SANITY_STUDIO_PATH` (기본 `/admin`)
+- Studio URL 계산: `new URL(NEXT_PUBLIC_SANITY_STUDIO_PATH, NEXT_PUBLIC_SITE_URL)`
+- 내부 App Router 엔트리는 `/admin/*`이며, 설정 경로는 rewrite로 연결
+- 활성 조건:
+  - `NEXT_PUBLIC_ENABLE_SANITY=true`
+  - `NEXT_PUBLIC_SANITY_PROJECT_ID`, `NEXT_PUBLIC_SANITY_DATASET`, `NEXT_PUBLIC_SANITY_API_VERSION` 설정
+- 비활성 시 동작: `404` fallback
+- 권한: 기본 RBAC 규칙에서 Studio 경로는 `admin` 역할 필요
+
+기본 Studio 설정 파일:
+
+- `src/lib/sanity/studio-config.ts`
+- `src/lib/sanity/studio-schema.ts`
 
 ## 5) 스키마 설계 권장
 
@@ -81,3 +99,4 @@ pnpm run provision:sanity
 - `pnpm run build`
 - `/api/content/sanity-status`에서 연결 상태 확인
 - `/{locale}/blog` 목록/상세 렌더링 확인
+- `NEXT_PUBLIC_SANITY_STUDIO_PATH` 접속 확인 (admin 권한 계정)
