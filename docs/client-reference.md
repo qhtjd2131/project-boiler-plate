@@ -53,11 +53,12 @@
 
 ## 6) 페이지별 적용 매핑
 
-- `/{locale}`:
-- `/{locale}/about`:
-- `/{locale}/services`:
-- `/{locale}/portfolio`:
-- `/{locale}/contact`:
+- `/` (기본언어):
+- `/en`:
+- `/about`, `/en/about`:
+- `/services`, `/en/services`:
+- `/portfolio`, `/en/portfolio`:
+- `/contact`, `/en/contact`:
 
 ## 7) 구현 가드레일 (AI 체크)
 

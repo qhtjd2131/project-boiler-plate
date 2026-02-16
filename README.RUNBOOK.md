@@ -60,7 +60,6 @@
   - `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
   - `SUPABASE_SECRET_KEY`
   - `SUPABASE_DB_URL` (provisioning)
-  - `SUPABASE_BRIEF_TABLE` (선택, 기본 `project_briefs`)
 
 ### Sanity (공개 콘텐츠)
 
@@ -87,7 +86,6 @@ Supabase 사용 시:
 - `NEXT_PUBLIC_SUPABASE_URL`
 - `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
 - `SUPABASE_SECRET_KEY`
-- `SUPABASE_BRIEF_TABLE` (선택)
 
 Sanity 사용 시:
 
@@ -130,15 +128,13 @@ pnpm run provision:supabase
 
 실행 시 수행 내용:
 
-- `project_briefs`(또는 `SUPABASE_BRIEF_TABLE`) 테이블 생성
-- `created_at` 인덱스 생성
-- `updated_at` 자동 갱신 trigger/function 생성
-- RLS 활성화
+- DB 연결 확인
+- 현재 연결된 database 이름 출력
+- 샘플 테이블 자동 생성은 수행하지 않음
 
 주의:
 
-- 런타임 briefs 리포지토리도 `SUPABASE_BRIEF_TABLE` 값을 동일하게 사용합니다.
-- write API는 `SUPABASE_SECRET_KEY`가 없으면 동작하지 않습니다.
+- 운영 테이블 생성/마이그레이션은 프로젝트 도메인 스키마 기준으로 별도 진행합니다.
 
 ### Sanity
 
@@ -162,24 +158,23 @@ pnpm run provision:all
 
 ### 대시보드 상태 검증
 
-- `/{locale}`에서 backend status 확인
-- Supabase 미구성 시 briefs UI는 비활성 안내로 표시되는지 확인
+- `/`(기본언어) 또는 `/en`(비기본언어)에서 backend status 확인
 - Sanity 미구성 시 콘텐츠 목록이 숨김+안내 상태인지 확인
 
 ### Sanity 콘텐츠/Studio 검증
 
-- `/{locale}/blog` 목록 렌더링 확인
-- `/{locale}/blog/[slug]` 상세 렌더링 + metadata 확인
+- `/blog`와 `/en/blog` 목록 렌더링 확인
+- `/blog/[slug]`와 `/en/blog/[slug]` 상세 렌더링 + metadata 확인
 - `NEXT_PUBLIC_SANITY_STUDIO_PATH` 접속 확인 (admin 권한)
 
 ### Auth + RBAC 검증
 
 - 보호 경로:
-  - `/{locale}/app` -> `member` 이상
+  - `/app`(기본언어), `/en/app`(비기본언어) -> `member` 이상
   - `NEXT_PUBLIC_SANITY_STUDIO_PATH` -> `admin`
 - 점검 순서:
-  1. 로그아웃 상태로 `/{locale}/app` 접근 -> 로그인 페이지 리다이렉트
-  2. 매직 링크 로그인 후 callback 복귀 동작 확인
+  1. 로그아웃 상태로 `/app` 접근 -> 로그인 페이지 리다이렉트
+  2. 이메일/비밀번호 로그인 또는 Google/Kakao OAuth 로그인 동작 확인
   3. role 메타데이터 변경 후 Studio 접근 권한 확인
 
 Auth Redirect URL 권장 등록:
@@ -190,7 +185,8 @@ Auth Redirect URL 권장 등록:
 
 ## 6) i18n + SEO 검증
 
-- `/` -> locale 경로 리다이렉트 동작 확인
+- 기본언어(`ko`)는 locale prefix 없이 경로가 동작하는지 확인
+- 비기본언어(`en`)는 `/en/*` 경로로 동작하는지 확인
 - locale별 텍스트 렌더링 확인
 - `sitemap.xml` locale URL 포함 확인
 - canonical/hreflang 출력 확인

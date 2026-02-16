@@ -1,6 +1,6 @@
 "use client";
 
-import type { AuthProvider } from "@/lib/auth/types";
+import type { AuthProvider, OAuthProvider } from "@/lib/auth/types";
 import { getErrorMessage, resultErr, resultOk, type AppResult } from "@/lib/contracts/result";
 import { getSupabaseBrowserClient } from "@/lib/supabase/browser-client";
 
@@ -34,25 +34,57 @@ export class SupabaseAuthProvider implements AuthProvider {
     }
   }
 
-  async signInWithOtp(email: string, emailRedirectTo?: string): Promise<AppResult<null>> {
+  async signInWithPassword(email: string, password: string): Promise<AppResult<null>> {
     try {
       const client = getSupabaseBrowserClient();
-      const { error } = await client.auth.signInWithOtp({
+      const { error } = await client.auth.signInWithPassword({
         email,
-        options: emailRedirectTo
-          ? {
-              emailRedirectTo,
-            }
-          : undefined,
+        password,
       });
 
       if (error) {
-        return resultErr("UNAUTHORIZED", "Unable to start OTP sign-in flow", error.message);
+        return resultErr(
+          "UNAUTHORIZED",
+          "Unable to sign in with email and password",
+          error.message,
+        );
       }
 
       return resultOk(null, "supabase");
     } catch (error) {
-      return resultErr("INTERNAL", "Supabase OTP request failed", getErrorMessage(error));
+      return resultErr("INTERNAL", "Supabase password sign-in failed", getErrorMessage(error));
+    }
+  }
+
+  async signInWithOAuth(
+    provider: OAuthProvider,
+    redirectTo: string,
+  ): Promise<AppResult<{ url: string }>> {
+    try {
+      const client = getSupabaseBrowserClient();
+      const { data, error } = await client.auth.signInWithOAuth({
+        provider,
+        options: {
+          redirectTo,
+          skipBrowserRedirect: true,
+        },
+      });
+
+      if (error) {
+        return resultErr("UNAUTHORIZED", `Unable to sign in with ${provider}`, error.message);
+      }
+
+      if (!data.url) {
+        return resultErr("INTERNAL", "Supabase OAuth did not return a redirect URL");
+      }
+
+      return resultOk({ url: data.url }, "supabase");
+    } catch (error) {
+      return resultErr(
+        "INTERNAL",
+        `Supabase OAuth sign-in failed for ${provider}`,
+        getErrorMessage(error),
+      );
     }
   }
 

@@ -4,7 +4,7 @@
 
 ## 1) 기본 전략
 
-- URL 전략: `/{locale}`
+- URL 전략: 기본언어(`ko`)는 prefix 없음, 비기본언어는 `/{locale}`
 - 기본 언어: `ko`
 - 지원 언어: `ko`, `en`
 
@@ -16,8 +16,9 @@
 
 ## 2) 라우팅 동작
 
-- `/` 접속 시 `accept-language` 기반으로 locale 경로로 리다이렉트
-- locale 없는 보조 경로(`/blog`, `/app`, `/auth/sign-in`)는 기본 언어(`ko`) 경로로 리다이렉트
+- `/`는 기본언어(`ko`)를 렌더링하고, `accept-language`가 비기본언어면 해당 locale 경로로 이동
+- locale 없는 경로(`/blog`, `/app`, `/auth/sign-in`)는 내부적으로 기본언어 route로 rewrite 처리
+- `/ko/*` 요청은 canonical 기본경로(`/*`)로 301/308 리다이렉트
 - 보호 라우트는 proxy에서 locale를 인식해 sign-in/forbidden 경로도 locale 유지
 
 ## 3) 새로운 언어 추가 절차
@@ -69,8 +70,9 @@ locale 전환 시 아래가 함께 변경되어야 한다.
 
 ## 6) 품질 점검 체크리스트
 
-- `/` -> `/ko` 또는 `/en` 리다이렉트 확인
-- `/{locale}` 페이지 문자열 번역 확인
+- `/` 기본언어 렌더링, `/en` 비기본언어 렌더링 확인
+- `/ko/*` 접근 시 prefix 없는 canonical 경로로 리다이렉트 확인
+- `/`, `/en` 페이지 문자열 번역 확인
 - 페이지 소스에 canonical/hreflang 존재 확인
 - `/sitemap.xml` locale URL 확인
 - `pnpm run lint`, `pnpm run typecheck`, `pnpm run build` 통과

@@ -38,9 +38,9 @@ pnpm run provision:sanity
 - Repository: `src/lib/backend/sanity-content-repository.ts`
 - List API: `GET /api/content/public-items`
 - Detail API: `GET /api/content/public-items/:slug`
-- 화면 예시:
-  - `/{locale}/blog`
-  - `/{locale}/blog/[slug]`
+- 라우트 예시:
+  - 기본 언어: `/blog`, `/blog/[slug]`
+  - 비기본 언어: `/en/blog`, `/en/blog/[slug]`
 
 ## 4.5) 임베디드 Studio (상대경로 기반)
 
@@ -98,5 +98,5 @@ pnpm run provision:sanity
 - `pnpm run typecheck`
 - `pnpm run build`
 - `/api/content/sanity-status`에서 연결 상태 확인
-- `/{locale}/blog` 목록/상세 렌더링 확인
+- `/blog`, `/en/blog` 목록/상세 렌더링 확인
 - `NEXT_PUBLIC_SANITY_STUDIO_PATH` 접속 확인 (admin 권한 계정)

@@ -20,12 +20,11 @@ NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=
 SUPABASE_SECRET_KEY=
 
 SUPABASE_DB_URL=
-SUPABASE_BRIEF_TABLE=project_briefs
 ```
 
 ## 3) 기본 스키마 프로비저닝
 
-아래 명령으로 운영 테이블 기본 구조를 생성한다.
+아래 명령으로 Supabase DB 연결 상태를 검증한다.
 
 ```bash
 pnpm run provision:supabase
@@ -33,15 +32,14 @@ pnpm run provision:supabase
 
 실행 결과:
 
-- `project_briefs` 테이블 생성(미존재 시)
-- `created_at` 인덱스 생성
-- `updated_at` 자동 갱신 트리거 생성
-- RLS 활성화
-- 앱 런타임 briefs 리포지토리도 `SUPABASE_BRIEF_TABLE` 값을 사용
+- DB 연결 성공 여부 출력
+- 현재 연결 database 정보 출력
+- 샘플 테이블 자동 생성 없음(도메인 스키마는 프로젝트별로 별도 관리)
 
 ## 4) 인증(Auth) 설정
 
-- Auth Provider는 기본 Supabase OTP(Magic Link)로 구현되어 있다.
+- Auth Provider는 기본 이메일/비밀번호 + OAuth(`google`, `kakao`)로 구현되어 있다.
+- Supabase Auth 설정에서 Email provider와 Google/Kakao provider를 활성화한다.
 - Redirect URL에 다음 경로를 포함한다.
   - `https://<domain>/auth/callback`
   - `https://<domain>/<locale>/auth/callback`
@@ -51,7 +49,7 @@ pnpm run provision:supabase
 
 기본 보호 경로:
 
-- `/{locale}/app` -> `member` 이상
+- `/app`(기본언어), `/en/app`(비기본언어) -> `member` 이상
 - `NEXT_PUBLIC_SANITY_STUDIO_PATH`(기본 `/admin`) -> `admin`
 - `/api/private/*` -> `member` 이상
 - `/api/admin/*` -> `admin`
@@ -82,4 +80,4 @@ pnpm run provision:supabase
 - `pnpm run typecheck`
 - `pnpm run build`
 - `/api/backends/status`에서 `supabase` 상태 확인
-- `/{locale}/app` 접근 제어 동작 확인
+- `/app` 및 `/en/app` 접근 제어 동작 확인

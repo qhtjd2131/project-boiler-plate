@@ -28,7 +28,6 @@ export function SiteHeader() {
     { href: localizePathname("/blog", locale), label: messages.common.blog },
     { href: localizePathname("/auth/sign-in", locale), label: messages.common.signIn },
     { href: "/api/backends/status", label: messages.common.backendStatusApi },
-    { href: "/api/backends/briefs", label: messages.common.briefsApi },
   ];
 
   return (

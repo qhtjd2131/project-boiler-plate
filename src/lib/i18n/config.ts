@@ -51,6 +51,10 @@ export function localizePathname(pathname: string, locale: AppLocale): string {
   const normalized = pathname.startsWith("/") ? pathname : `/${pathname}`;
   const withoutLocale = stripLocaleFromPathname(normalized);
 
+  if (locale === DEFAULT_LOCALE) {
+    return withoutLocale;
+  }
+
   if (withoutLocale === "/") {
     return `/${locale}`;
   }

@@ -10,7 +10,7 @@
 - OpenCode 설정 + MCP 프로필 (`opencode.json`, `opencode.md`)
 - 고객 레퍼런스 운영 문서 (`docs/client-reference.md`)
 - 다국어 라우팅(`ko`,`en`, 확장 가능) + locale SEO
-- Supabase Auth 가드 + RBAC proxy 가드
+- Supabase Auth 가드(이메일/비밀번호 + Google/Kakao OAuth) + RBAC proxy 가드
 - 임베디드 Sanity Studio (기본 `/admin`, 플래그 게이트)
 
 ## 버전 정책
@@ -46,8 +46,8 @@
 
 ## i18n + SEO
 
-- locale 라우트: `/{locale}` (기본 `ko`, `en`)
-- 루트 `/`는 `accept-language`를 기반으로 locale 경로로 리다이렉트
+- locale 라우트: 기본언어(`ko`)는 prefix 없음, 비기본언어(`en`)는 `/{locale}`
+- 루트 `/`는 기본언어 대시보드를 렌더링하고, 비기본언어 선호 시 해당 locale 경로로 이동
 - locale별 canonical/hreflang 자동 생성
 - `sitemap.xml`은 App Router 페이지 자동 수집 + locale 확장
 - 비공개 경로(`auth`, `app`, `forbidden`, Studio path)는 sitemap 제외
@@ -104,9 +104,6 @@ pnpm run dev
 - `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
 - `SUPABASE_SECRET_KEY` (서버 write 전용)
 - `SUPABASE_DB_URL` (provisioning 스크립트용)
-- `SUPABASE_BRIEF_TABLE` (선택, 기본 `project_briefs`)
-
-`SUPABASE_BRIEF_TABLE`은 provisioning과 런타임 briefs 리포지토리에서 동일하게 사용됩니다.
 
 ### Sanity (공개 콘텐츠)
 
@@ -131,9 +128,9 @@ type AppResult<T> =
 - Repository: `src/lib/backend/sanity-content-repository.ts`
 - 목록 API: `GET /api/content/public-items`
 - 상세 API: `GET /api/content/public-items/:slug`
-- 예시 라우트:
-  - `/{locale}/blog`
-  - `/{locale}/blog/[slug]`
+- 라우트:
+  - 기본 언어: `/blog`, `/blog/[slug]`
+  - 비기본 언어: `/en/blog`, `/en/blog/[slug]`
 
 ## 임베디드 Sanity Studio
 
@@ -145,8 +142,7 @@ type AppResult<T> =
 
 ## 대시보드 런타임 동작
 
-- Brief 생성/목록 UI는 Supabase 플래그+런타임 키가 모두 준비된 경우에만 활성화됩니다.
-- Supabase가 비활성/미구성 상태면 저장 대신 안내 메시지를 표시합니다.
+- 대시보드는 샘플 입력/저장 폼 없이 백엔드 상태와 콘텐츠 파이프라인 점검 UI로 구성됩니다.
 - Sanity 콘텐츠 카드도 Sanity 플래그+런타임 키가 준비된 경우에만 노출됩니다.
 
 ## 스크립트
@@ -159,7 +155,7 @@ type AppResult<T> =
 - `pnpm run typecheck`: TypeScript 검사
 - `pnpm run format`: Prettier 포맷 적용
 - `pnpm run format:check`: Prettier 검사
-- `pnpm run provision:supabase`: Supabase 테이블/인덱스/트리거/RLS 준비
+- `pnpm run provision:supabase`: Supabase DB 연결 검증
 - `pnpm run provision:sanity`: Sanity 연결 검증
 - `pnpm run provision:all`: 두 provisioning 순차 실행
 

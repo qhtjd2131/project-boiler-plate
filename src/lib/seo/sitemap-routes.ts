@@ -1,7 +1,7 @@
 import { readdir } from "node:fs/promises";
 import path from "node:path";
 
-import { stripLocaleFromPathname, SUPPORTED_LOCALES } from "@/lib/i18n/config";
+import { DEFAULT_LOCALE, stripLocaleFromPathname, SUPPORTED_LOCALES } from "@/lib/i18n/config";
 import { getSanityStudioPath } from "@/lib/sanity/studio-path";
 
 const PAGE_FILE_PATTERN = /^page\.(ts|tsx|js|jsx|mdx)$/;
@@ -109,7 +109,15 @@ function expandRouteTemplate(template: string): string[] {
     return [template];
   }
 
-  return SUPPORTED_LOCALES.map((locale) => template.replace(new RegExp(LOCALE_TOKEN, "g"), locale));
+  const expanded = SUPPORTED_LOCALES.map((locale) => {
+    const replacement = locale === DEFAULT_LOCALE ? "" : locale;
+    const withLocale = template.replace(new RegExp(LOCALE_TOKEN, "g"), replacement);
+    const normalized = withLocale.replace(/\/{2,}/g, "/").replace(/\/+$/, "") || "/";
+
+    return normalized;
+  });
+
+  return Array.from(new Set(expanded));
 }
 
 function isSitemapEligible(route: string): boolean {

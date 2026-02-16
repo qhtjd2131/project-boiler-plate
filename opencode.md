@@ -10,7 +10,7 @@
 - 프로젝트 목표 한 줄:
 - 핵심 사용자/검색 의도:
 - 핵심 전환 이벤트(회원가입, 문의, 결제 등):
-- 필수 라우트 목록(예: `/`, `/{locale}/pricing`, `/{locale}/blog/[slug]`):
+- 필수 라우트 목록(예: `/`, `/pricing`, `/en/pricing`, `/blog/[slug]`, `/en/blog/[slug]`):
 - 콘텐츠 소스(정적/Sanity 스키마):
 - 백엔드 플래그(`supabase`, `sanity`):
 - 분석 플래그(`google_analytics` on/off, 측정 ID 보유 여부):
@@ -26,7 +26,7 @@
 3. slug 규칙은 무엇인가? (영문 고정/국문 허용/날짜 포함 여부)
 4. index/noindex 대상 페이지는 무엇인가?
 5. canonical 도메인은 무엇인가? (`www` 포함 여부)
-6. 다국어 URL 전략은 `/{locale}`로 확정인가? (예: `ko`, `en`)
+6. 다국어 URL 전략은 "기본언어 prefix 없음 + 비기본언어 `/{locale}`"로 확정인가? (예: `ko`, `en`)
 7. locale별 메타 title/description을 개별 운영할지 공용 템플릿을 쓸지?
 8. JSON-LD 유형은 무엇이 필요한가? (`Organization`, `WebSite`, `Article`, `FAQPage` 등)
 9. Sanity에서 SEO 필드(`seo_title`, `seo_description`, `og_image`)를 운영할지?
@@ -42,7 +42,7 @@
 - 콘텐츠 운영: Sanity dataset 기반
 - 다국어: `ko`, `en`
 - 기본 언어: `ko`
-- URL 전략: `/{locale}`
+- URL 전략: 기본언어 prefix 없음 + 비기본언어 `/{locale}`
 - canonical: `NEXT_PUBLIC_SITE_URL`
 - SEO 정책: 공개 페이지 index, 인증/개인화 페이지 noindex
 - 반응형: `mobile < tablet < laptop < desktop` 고정 구간
@@ -167,7 +167,7 @@
 
 - 고객이 전달한 참고 사이트/디자인 링크는 반드시 `docs/client-reference.md`에 구조화해 기록한다
 - 링크별로 `must / should / avoid`를 구분해 우선순위를 명시한다
-- 페이지 단위 매핑(`/{locale}`, `/{locale}/portfolio` 등)을 작성해 구현 시 추적 가능하게 유지한다
+- 페이지 단위 매핑(`/`, `/en`, `/portfolio`, `/en/portfolio` 등)을 작성해 구현 시 추적 가능하게 유지한다
 - 레퍼런스 간 충돌이 있으면 전환 효율, 접근성, 브랜드 톤 순으로 결정한다
 - 구현 완료 전 "레퍼런스 반영 여부"를 간단 체크리스트로 검수한다
 

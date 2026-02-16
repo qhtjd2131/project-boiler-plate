@@ -39,7 +39,7 @@
 
 특히 아래 동작을 유지한다:
 
-- 대시보드 briefs UI는 Supabase 준비 상태에서만 활성화
+- 대시보드는 샘플 입력/저장 폼 없이 백엔드 상태/콘텐츠 파이프라인 점검 UI를 유지
 - Sanity 콘텐츠 카드는 Sanity 준비 상태에서만 노출
 - Sanity Studio 외부 경로는 `NEXT_PUBLIC_SANITY_STUDIO_PATH` 기준
 - 내부 Studio 엔트리는 `/admin/*`를 유지하고 rewrite로 매핑

@@ -5,8 +5,11 @@ export type AuthSession = {
   email: string | null;
 };
 
+export type OAuthProvider = "google" | "kakao";
+
 export interface AuthProvider {
   getSession(): Promise<AppResult<AuthSession | null>>;
-  signInWithOtp(email: string, emailRedirectTo?: string): Promise<AppResult<null>>;
+  signInWithPassword(email: string, password: string): Promise<AppResult<null>>;
+  signInWithOAuth(provider: OAuthProvider, redirectTo: string): Promise<AppResult<{ url: string }>>;
   signOut(): Promise<AppResult<null>>;
 }

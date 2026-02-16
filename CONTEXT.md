@@ -24,7 +24,7 @@
 ## 4) 현재 주요 기능
 
 - locale 라우팅(`ko`, `en`) 및 locale SEO
-- Supabase 기반 로그인(OTP Magic Link) + RBAC
+- Supabase 기반 로그인(이메일/비밀번호 + Google/Kakao OAuth) + RBAC
 - Sanity 공개 콘텐츠 API/페이지
 - Sanity Studio 임베드 (`NEXT_PUBLIC_SANITY_STUDIO_PATH`)
 - 기능 플래그 기반 모듈 게이트
@@ -34,18 +34,17 @@
 
 - 공개:
   - `/`
-  - `/{locale}`
-  - `/{locale}/blog`
-  - `/{locale}/blog/[slug]`
+  - `/en`
+  - `/blog`, `/blog/[slug]`
+  - `/en/blog`, `/en/blog/[slug]`
 - 인증:
-  - `/auth/sign-in`, `/{locale}/auth/sign-in`
-  - `/auth/callback`, `/{locale}/auth/callback`
+  - `/auth/sign-in`, `/en/auth/sign-in`
+  - `/auth/callback`, `/en/auth/callback`
 - 보호:
-  - `/app`, `/{locale}/app` (member 이상)
+  - `/app`, `/en/app` (member 이상)
   - Studio path (`NEXT_PUBLIC_SANITY_STUDIO_PATH`) (admin)
 - API:
   - `/api/backends/status`
-  - `/api/backends/briefs`
   - `/api/content/sanity-status`
   - `/api/content/public-items`
   - `/api/content/public-items/[slug]`
@@ -66,7 +65,6 @@
 - `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
 - `SUPABASE_SECRET_KEY` (server-only)
 - `SUPABASE_DB_URL` (provisioning)
-- `SUPABASE_BRIEF_TABLE` (기본 `project_briefs`)
 
 ### Sanity
 
@@ -86,7 +84,7 @@
 ## 8) provisioning
 
 - `pnpm run provision:supabase`
-  - briefs 테이블/인덱스/트리거/RLS 생성
+  - Supabase DB 연결 상태 검증
 - `pnpm run provision:sanity`
   - Sanity 연결/조회 가능 상태 검증
 - `pnpm run provision:all`
