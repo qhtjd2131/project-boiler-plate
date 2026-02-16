@@ -1,6 +1,6 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "instructions": ["opencode.md", "docs/client-reference.md"],
+  "instructions": ["AGENT.md", "CONTEXT.md", "opencode.md", "docs/client-reference.md"],
   "mcp": {
     "supabase": {
       "type": "remote",
