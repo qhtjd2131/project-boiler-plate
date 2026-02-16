@@ -10,7 +10,7 @@ const publicEnvSchema = z.object({
   NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: z.string().default(""),
   NEXT_PUBLIC_SANITY_PROJECT_ID: z.string().default(""),
   NEXT_PUBLIC_SANITY_DATASET: z.string().default("production"),
-  NEXT_PUBLIC_SANITY_API_VERSION: z.string().default("2025-02-19"),
+  NEXT_PUBLIC_SANITY_API_VERSION: z.string().default("2026-02-16"),
   NEXT_PUBLIC_SANITY_STUDIO_PATH: z.string().default("/admin"),
   NEXT_PUBLIC_GA_MEASUREMENT_ID: z.string().default(""),
 });
