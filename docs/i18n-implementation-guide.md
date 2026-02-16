@@ -7,6 +7,7 @@
 - URL 전략: 기본언어(`ko`)는 prefix 없음, 비기본언어는 `/{locale}`
 - 기본 언어: `ko`
 - 지원 언어: `ko`, `en`
+- i18n 플래그: `NEXT_PUBLIC_ENABLE_I18N`
 
 핵심 설정 파일:
 
@@ -20,6 +21,8 @@
 - locale 없는 경로(`/blog`, `/app`, `/auth/sign-in`, `/auth/sign-up`)는 내부적으로 기본언어 route로 rewrite 처리
 - `/ko/*` 요청은 canonical 기본경로(`/*`)로 301/308 리다이렉트
 - 보호 라우트는 proxy에서 locale를 인식해 sign-in/forbidden 경로도 locale 유지
+- `NEXT_PUBLIC_ENABLE_I18N=false`면 locale selector UI를 숨기고 비기본 locale 경로는 `404` 처리
+- locale 전환 UI는 toggle이 아니라 경로 매칭 기반 select(change event) 방식으로 동작
 
 ## 3) 새로운 언어 추가 절차
 

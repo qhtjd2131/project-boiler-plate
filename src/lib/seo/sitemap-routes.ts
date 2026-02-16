@@ -1,7 +1,8 @@
 import { readdir } from "node:fs/promises";
 import path from "node:path";
 
-import { DEFAULT_LOCALE, stripLocaleFromPathname, SUPPORTED_LOCALES } from "@/lib/i18n/config";
+import { DEFAULT_LOCALE, stripLocaleFromPathname } from "@/lib/i18n/config";
+import { getEnabledAppLocales } from "@/lib/i18n/runtime-config";
 import { getSanityStudioPath } from "@/lib/sanity/studio-path";
 
 const PAGE_FILE_PATTERN = /^page\.(ts|tsx|js|jsx|mdx)$/;
@@ -109,7 +110,7 @@ function expandRouteTemplate(template: string): string[] {
     return [template];
   }
 
-  const expanded = SUPPORTED_LOCALES.map((locale) => {
+  const expanded = getEnabledAppLocales().map((locale) => {
     const replacement = locale === DEFAULT_LOCALE ? "" : locale;
     const withLocale = template.replace(new RegExp(LOCALE_TOKEN, "g"), replacement);
     const normalized = withLocale.replace(/\/{2,}/g, "/").replace(/\/+$/, "") || "/";
@@ -125,8 +126,8 @@ function isSitemapEligible(route: string): boolean {
   const studioPath = getSanityStudioPath();
   const privatePrefixes =
     studioPath === "/admin"
-      ? ["/auth", "/forbidden", "/app", "/admin"]
-      : ["/auth", "/forbidden", "/app", "/admin", studioPath];
+      ? ["/auth", "/forbidden", "/app", "/status", "/admin"]
+      : ["/auth", "/forbidden", "/app", "/status", "/admin", studioPath];
 
   return !privatePrefixes.some(
     (prefix) => baseRoute === prefix || baseRoute.startsWith(`${prefix}/`),

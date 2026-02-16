@@ -1,11 +1,7 @@
 import type { Metadata } from "next";
 
-import {
-  getOpenGraphLocale,
-  localizePathname,
-  SUPPORTED_LOCALES,
-  type AppLocale,
-} from "@/lib/i18n/config";
+import { getOpenGraphLocale, localizePathname, type AppLocale } from "@/lib/i18n/config";
+import { getEnabledAppLocales } from "@/lib/i18n/runtime-config";
 import { getSiteUrl } from "@/lib/seo/site-url";
 
 type LocalizedMetadataInput = {
@@ -19,23 +15,31 @@ type LocalizedMetadataInput = {
 export function createLocalizedMetadata(input: LocalizedMetadataInput): Metadata {
   const siteUrl = getSiteUrl();
   const canonicalPath = localizePathname(input.pathname, input.locale);
+  const enabledLocales = getEnabledAppLocales();
 
-  const languageAlternates = Object.fromEntries(
-    SUPPORTED_LOCALES.map((locale) => [
-      locale,
-      new URL(localizePathname(input.pathname, locale), `${siteUrl}/`).toString(),
-    ]),
-  );
+  const languageAlternates =
+    enabledLocales.length > 1
+      ? Object.fromEntries(
+          enabledLocales.map((locale) => [
+            locale,
+            new URL(localizePathname(input.pathname, locale), `${siteUrl}/`).toString(),
+          ]),
+        )
+      : undefined;
 
   const canonicalUrl = new URL(canonicalPath, `${siteUrl}/`).toString();
 
   return {
     title: input.title,
     description: input.description,
-    alternates: {
-      canonical: canonicalUrl,
-      languages: languageAlternates,
-    },
+    alternates: languageAlternates
+      ? {
+          canonical: canonicalUrl,
+          languages: languageAlternates,
+        }
+      : {
+          canonical: canonicalUrl,
+        },
     openGraph: {
       type: "website",
       locale: getOpenGraphLocale(input.locale),

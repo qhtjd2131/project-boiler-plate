@@ -107,6 +107,10 @@ export function BoilerplateDashboard({ locale, messages }: BoilerplateDashboardP
                 <span className="text-sm font-medium">Auth enabled</span>
                 <Switch checked={statusQuery.data.enabled.auth} disabled />
               </div>
+              <div className="flex items-center justify-between rounded-lg border border-dashed p-3">
+                <span className="text-sm font-medium">i18n enabled</span>
+                <Switch checked={statusQuery.data.enabled.i18n} disabled />
+              </div>
               <Separator />
               <div className="space-y-2 text-sm">
                 <p>
@@ -123,6 +127,9 @@ export function BoilerplateDashboard({ locale, messages }: BoilerplateDashboardP
                 </p>
                 <p className="text-muted-foreground">
                   Auth configured: {String(statusQuery.data.configured.auth)}
+                </p>
+                <p className="text-muted-foreground">
+                  i18n configured: {String(statusQuery.data.configured.i18n)}
                 </p>
               </div>
             </>

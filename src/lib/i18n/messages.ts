@@ -6,7 +6,7 @@ export type AppMessages = {
     app: string;
     blog: string;
     signIn: string;
-    backendStatusApi: string;
+    systemStatus: string;
     backToHome: string;
   };
   dashboard: {
@@ -86,6 +86,40 @@ export type AppMessages = {
     backToList: string;
     noExcerpt: string;
   };
+  statusPage: {
+    metaTitle: string;
+    metaDescription: string;
+    title: string;
+    description: string;
+    moduleStatusTitle: string;
+    moduleStatusDescription: string;
+    sourceOperationalLabel: string;
+    sourceContentLabel: string;
+    enabledLabel: string;
+    configuredLabel: string;
+    readyLabel: string;
+    moduleSupabase: string;
+    moduleSanity: string;
+    moduleAuth: string;
+    moduleI18n: string;
+    onState: string;
+    offState: string;
+  };
+  footer: {
+    brandTitle: string;
+    brandDescription: string;
+    quickLinksTitle: string;
+    moduleStatusTitle: string;
+    deliveryTitle: string;
+    deliveryDescription: string;
+    moduleSupabase: string;
+    moduleSanity: string;
+    moduleAuth: string;
+    moduleI18n: string;
+    onState: string;
+    offState: string;
+    copyright: string;
+  };
 };
 
 const messages: Record<AppLocale, AppMessages> = {
@@ -95,7 +129,7 @@ const messages: Record<AppLocale, AppMessages> = {
       app: "앱",
       blog: "콘텐츠",
       signIn: "로그인",
-      backendStatusApi: "백엔드 상태 API",
+      systemStatus: "시스템 상태",
       backToHome: "홈으로",
     },
     dashboard: {
@@ -185,6 +219,41 @@ const messages: Record<AppLocale, AppMessages> = {
       backToList: "콘텐츠 목록으로",
       noExcerpt: "요약이 없습니다.",
     },
+    statusPage: {
+      metaTitle: "시스템 상태",
+      metaDescription: "Supabase, Sanity, Auth, i18n 모듈 상태를 확인하는 운영 페이지입니다.",
+      title: "시스템 상태",
+      description: "현재 프로젝트에서 활성화된 모듈과 구성 완료 상태를 확인합니다.",
+      moduleStatusTitle: "모듈 상태",
+      moduleStatusDescription: "플래그 활성 여부와 런타임 구성 상태를 동시에 표시합니다.",
+      sourceOperationalLabel: "운영 데이터 소스",
+      sourceContentLabel: "콘텐츠 소스",
+      enabledLabel: "활성화",
+      configuredLabel: "구성 완료",
+      readyLabel: "준비 상태",
+      moduleSupabase: "Supabase",
+      moduleSanity: "Sanity",
+      moduleAuth: "Auth",
+      moduleI18n: "i18n",
+      onState: "ON",
+      offState: "OFF",
+    },
+    footer: {
+      brandTitle: "External Delivery Boilerplate",
+      brandDescription: "외주 프로젝트를 빠르게 시작할 수 있도록 설계된 모듈형 Next.js 스타터.",
+      quickLinksTitle: "바로가기",
+      moduleStatusTitle: "모듈 상태",
+      deliveryTitle: "운영 원칙",
+      deliveryDescription:
+        "기능은 플래그로 제어하고, 사용하지 않는 기능은 UI에서 노출하지 않습니다.",
+      moduleSupabase: "Supabase",
+      moduleSanity: "Sanity",
+      moduleAuth: "Auth",
+      moduleI18n: "i18n",
+      onState: "ON",
+      offState: "OFF",
+      copyright: "All rights reserved.",
+    },
   },
   en: {
     common: {
@@ -192,7 +261,7 @@ const messages: Record<AppLocale, AppMessages> = {
       app: "App",
       blog: "Content",
       signIn: "Sign In",
-      backendStatusApi: "Backend Status API",
+      systemStatus: "System Status",
       backToHome: "Back to home",
     },
     dashboard: {
@@ -281,6 +350,41 @@ const messages: Record<AppLocale, AppMessages> = {
       metaFallbackDescription: "Public content detail",
       backToList: "Back to content list",
       noExcerpt: "No excerpt provided.",
+    },
+    statusPage: {
+      metaTitle: "System Status",
+      metaDescription: "Operational status page for Supabase, Sanity, Auth, and i18n modules.",
+      title: "System Status",
+      description: "Review enabled modules and runtime configuration readiness.",
+      moduleStatusTitle: "Module Status",
+      moduleStatusDescription:
+        "Shows feature-flag state and runtime configuration at the same time.",
+      sourceOperationalLabel: "Operational source",
+      sourceContentLabel: "Content source",
+      enabledLabel: "Enabled",
+      configuredLabel: "Configured",
+      readyLabel: "Ready",
+      moduleSupabase: "Supabase",
+      moduleSanity: "Sanity",
+      moduleAuth: "Auth",
+      moduleI18n: "i18n",
+      onState: "ON",
+      offState: "OFF",
+    },
+    footer: {
+      brandTitle: "External Delivery Boilerplate",
+      brandDescription: "Modular Next.js starter designed for fast outsourced project delivery.",
+      quickLinksTitle: "Quick links",
+      moduleStatusTitle: "Module status",
+      deliveryTitle: "Delivery principle",
+      deliveryDescription: "Control features with flags and keep unused features out of the UI.",
+      moduleSupabase: "Supabase",
+      moduleSanity: "Sanity",
+      moduleAuth: "Auth",
+      moduleI18n: "i18n",
+      onState: "ON",
+      offState: "OFF",
+      copyright: "All rights reserved.",
     },
   },
 };

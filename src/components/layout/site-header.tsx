@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -11,30 +11,34 @@ import {
   getLocaleDisplayName,
   getLocaleFromPathname,
   localizePathname,
-  SUPPORTED_LOCALES,
   type AppLocale,
 } from "@/lib/i18n/config";
+import { getEnabledAppLocales, isI18nModuleEnabled } from "@/lib/i18n/runtime-config";
 import { getMessages } from "@/lib/i18n/messages";
 
-const localeSwitches: AppLocale[] = [...SUPPORTED_LOCALES];
-
 export function SiteHeader() {
+  const router = useRouter();
   const pathname = usePathname();
   const locale = getLocaleFromPathname(pathname) ?? DEFAULT_LOCALE;
   const messages = getMessages(locale);
   const authEnabled = isAuthModuleEnabled();
+  const i18nEnabled = isI18nModuleEnabled();
+  const localeOptions = getEnabledAppLocales();
+  const activeLocale = localeOptions.includes(locale) ? locale : DEFAULT_LOCALE;
 
   const navigation = [
     { href: localizePathname("/", locale), label: messages.common.dashboard },
     { href: localizePathname("/blog", locale), label: messages.common.blog },
+    { href: localizePathname("/status", locale), label: messages.common.systemStatus },
     ...(authEnabled
       ? [
           { href: localizePathname("/app", locale), label: messages.common.app },
           { href: localizePathname("/auth/sign-in", locale), label: messages.common.signIn },
         ]
       : []),
-    { href: "/api/backends/status", label: messages.common.backendStatusApi },
   ];
+
+  const localePathname = pathname || "/";
 
   return (
     <header className="sticky top-0 z-40 border-b border-border/80 bg-background/90 backdrop-blur-md">
@@ -58,20 +62,25 @@ export function SiteHeader() {
             </Button>
           ))}
 
-          <div className="ml-2 flex items-center gap-1">
-            {localeSwitches.map((targetLocale) => (
-              <Button
-                key={targetLocale}
-                variant={targetLocale === locale ? "secondary" : "outline"}
-                size="sm"
-                asChild
+          {i18nEnabled && localeOptions.length > 1 ? (
+            <label className="ml-2 flex items-center gap-2 text-xs text-muted-foreground">
+              <span className="sr-only">Language</span>
+              <select
+                className="h-8 rounded-md border bg-background px-2 text-xs"
+                value={activeLocale}
+                onChange={(event) => {
+                  const targetLocale = event.target.value as AppLocale;
+                  router.push(localizePathname(localePathname, targetLocale));
+                }}
               >
-                <Link href={localizePathname(pathname || "/", targetLocale)}>
-                  {getLocaleDisplayName(targetLocale)}
-                </Link>
-              </Button>
-            ))}
-          </div>
+                {localeOptions.map((targetLocale) => (
+                  <option key={targetLocale} value={targetLocale}>
+                    {getLocaleDisplayName(targetLocale)}
+                  </option>
+                ))}
+              </select>
+            </label>
+          ) : null}
         </nav>
       </div>
 
@@ -83,21 +92,25 @@ export function SiteHeader() {
             </Link>
           </Button>
         ))}
-        {localeSwitches.map((targetLocale) => (
-          <Button
-            key={targetLocale}
-            variant={targetLocale === locale ? "secondary" : "ghost"}
-            size="sm"
-            asChild
-          >
-            <Link
-              href={localizePathname(pathname || "/", targetLocale)}
-              className="whitespace-nowrap"
+        {i18nEnabled && localeOptions.length > 1 ? (
+          <label className="ml-auto flex items-center text-xs text-muted-foreground">
+            <span className="sr-only">Language</span>
+            <select
+              className="h-8 rounded-md border bg-background px-2 text-xs"
+              value={activeLocale}
+              onChange={(event) => {
+                const targetLocale = event.target.value as AppLocale;
+                router.push(localizePathname(localePathname, targetLocale));
+              }}
             >
-              {getLocaleDisplayName(targetLocale)}
-            </Link>
-          </Button>
-        ))}
+              {localeOptions.map((targetLocale) => (
+                <option key={targetLocale} value={targetLocale}>
+                  {getLocaleDisplayName(targetLocale)}
+                </option>
+              ))}
+            </select>
+          </label>
+        ) : null}
       </nav>
     </header>
   );

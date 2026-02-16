@@ -38,7 +38,9 @@
 - 로그인 필요 -> `NEXT_PUBLIC_ENABLE_AUTH=true` (+ Supabase 필요)
 - 운영 DB/서버 데이터 필요 -> `NEXT_PUBLIC_ENABLE_SUPABASE=true`
 - 공개 콘텐츠 CMS 필요 -> `NEXT_PUBLIC_ENABLE_SANITY=true`
+- 다국어 노출 필요 -> `NEXT_PUBLIC_ENABLE_I18N=true`
 - Supabase를 사용하더라도 인증이 불필요하면 `NEXT_PUBLIC_ENABLE_AUTH=false`로 분리 운영합니다.
+- i18n OFF 상태에서는 locale 전환 UI를 숨기고 기본언어 경로만 노출합니다.
 
 ## 반응형 정책
 
@@ -57,7 +59,7 @@
 - 루트 `/`는 기본언어 대시보드를 렌더링하고, 비기본언어 선호 시 해당 locale 경로로 이동
 - locale별 canonical/hreflang 자동 생성
 - `sitemap.xml`은 App Router 페이지 자동 수집 + locale 확장
-- 비공개 경로(`auth`, `app`, `forbidden`, Studio path)는 sitemap 제외
+- 비공개 경로(`auth`, `app`, `forbidden`, `status`, Studio path)는 sitemap 제외
 - locale 집합은 `src/lib/i18n/config.ts`(`LOCALE_CONFIG`)에서 중앙 관리
 
 ## 빠른 시작
@@ -95,6 +97,7 @@ pnpm run dev
 - `NEXT_PUBLIC_ENABLE_SUPABASE`: `true`/`false`
 - `NEXT_PUBLIC_ENABLE_SANITY`: `true`/`false`
 - `NEXT_PUBLIC_ENABLE_AUTH`: `true`/`false`
+- `NEXT_PUBLIC_ENABLE_I18N`: `true`/`false`
 - `NEXT_PUBLIC_ENABLE_GA`: `true`/`false`
 - `NEXT_PUBLIC_SITE_URL`: canonical 기준 URL
 - `NEXT_PUBLIC_GA_MEASUREMENT_ID`: GA4 측정 ID (`G-XXXXXXXXXX`)
@@ -109,6 +112,11 @@ Auth 모듈 게이트:
 
 - `NEXT_PUBLIC_ENABLE_AUTH=false`면 인증 화면/보호 페이지 네비게이션을 숨기고 auth 페이지는 `404` 처리됩니다.
 - `AUTH_GUARD_ENABLED`는 auth 모듈이 활성화된 경우에만 적용됩니다.
+
+i18n 모듈 게이트:
+
+- `NEXT_PUBLIC_ENABLE_I18N=false`면 locale 전환 UI를 숨기고 비기본 locale 경로(`/en/*`)는 `404` 처리됩니다.
+- i18n OFF 상태에서는 기본언어 경로만 노출됩니다.
 
 ### Supabase (운영 백엔드)
 
@@ -162,6 +170,11 @@ type AppResult<T> =
 
 - 대시보드는 샘플 입력/저장 폼 없이 백엔드 상태와 콘텐츠 파이프라인 점검 UI로 구성됩니다.
 - Sanity 콘텐츠 카드도 Sanity 플래그+런타임 키가 준비된 경우에만 노출됩니다.
+
+## 시스템 상태 UI
+
+- 운영 확인용 UI 경로: `/status`, `/en/status`
+- 기계용 API 경로: `/api/backends/status`
 
 ## 스크립트
 

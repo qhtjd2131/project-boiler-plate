@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 
 import { notFound } from "next/navigation";
 
-import { isAppLocale, SUPPORTED_LOCALES } from "@/lib/i18n/config";
+import { getEnabledAppLocales, isEnabledAppLocale } from "@/lib/i18n/runtime-config";
 
 type LocaleLayoutProps = {
   children: ReactNode;
@@ -10,13 +10,13 @@ type LocaleLayoutProps = {
 };
 
 export function generateStaticParams() {
-  return SUPPORTED_LOCALES.map((locale) => ({ locale }));
+  return getEnabledAppLocales().map((locale) => ({ locale }));
 }
 
 export default async function LocaleLayout({ children, params }: LocaleLayoutProps) {
   const { locale } = await params;
 
-  if (!isAppLocale(locale)) {
+  if (!isEnabledAppLocale(locale)) {
     notFound();
   }
 

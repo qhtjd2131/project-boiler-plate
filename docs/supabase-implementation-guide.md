@@ -102,5 +102,6 @@ Auth 모듈 분리 규칙:
 - `pnpm run lint`
 - `pnpm run typecheck`
 - `pnpm run build`
-- `/api/backends/status`에서 `supabase` 상태 확인
+- `/status`(또는 `/en/status`)에서 `supabase` 상태 확인
+- `/api/backends/status` JSON 응답 확인
 - `/app` 및 `/en/app` 접근 제어 동작 확인

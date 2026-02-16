@@ -9,6 +9,7 @@ import {
   localizePathname,
   stripLocaleFromPathname,
 } from "@/lib/i18n/config";
+import { isEnabledAppLocale } from "@/lib/i18n/runtime-config";
 import { getSanityStudioPath } from "@/lib/sanity/studio-path";
 import { createSupabaseMiddlewareClient } from "@/lib/supabase/auth-middleware-client";
 
@@ -36,6 +37,12 @@ export async function proxy(request: NextRequest) {
   }
 
   const pathname = request.nextUrl.pathname;
+  const localeFromPathname = getLocaleFromPathname(pathname);
+
+  if (localeFromPathname && !isEnabledAppLocale(localeFromPathname)) {
+    return passThroughResponse;
+  }
+
   const rule = findRouteAccessRule(pathname);
 
   if (!rule) {
@@ -72,7 +79,11 @@ export async function proxy(request: NextRequest) {
 
 function createForwardedHeaders(request: NextRequest): Headers {
   const headers = new Headers(request.headers);
-  const locale = getLocaleFromPathname(request.nextUrl.pathname) ?? DEFAULT_LOCALE;
+  const localeFromPathname = getLocaleFromPathname(request.nextUrl.pathname);
+  const locale =
+    localeFromPathname && isEnabledAppLocale(localeFromPathname)
+      ? localeFromPathname
+      : DEFAULT_LOCALE;
 
   headers.set("x-app-locale", locale);
   headers.set("x-app-pathname", request.nextUrl.pathname);
@@ -252,7 +263,7 @@ function isStudioPath(pathname: string): boolean {
 function localizeIfPresent(pathname: string, targetPath: string): string {
   const locale = getLocaleFromPathname(pathname);
 
-  if (!locale) {
+  if (!locale || !isEnabledAppLocale(locale)) {
     return targetPath;
   }
 

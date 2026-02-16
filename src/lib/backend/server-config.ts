@@ -11,6 +11,7 @@ export function getBackendStatus(): BackendStatus {
   const serverEnv = getServerEnv();
   const flags = getPublicBackendFlags();
   const authEnabled = publicEnv.NEXT_PUBLIC_ENABLE_AUTH === "true" && flags.enableSupabase;
+  const i18nEnabled = publicEnv.NEXT_PUBLIC_ENABLE_I18N === "true";
 
   const hasSupabaseProjectId = Boolean(publicEnv.NEXT_PUBLIC_SUPABASE_PROJECT_ID);
   const hasSupabaseUrl = Boolean(publicEnv.NEXT_PUBLIC_SUPABASE_URL);
@@ -27,6 +28,7 @@ export function getBackendStatus(): BackendStatus {
       publicEnv.NEXT_PUBLIC_SANITY_API_VERSION,
     ),
     auth: Boolean(hasSupabaseProjectId && hasSupabaseUrl && hasSupabasePublicKey),
+    i18n: true,
   };
 
   const operationalSource: DataSource =
@@ -41,6 +43,7 @@ export function getBackendStatus(): BackendStatus {
       supabase: flags.enableSupabase,
       sanity: flags.enableSanity,
       auth: authEnabled,
+      i18n: i18nEnabled,
     },
     configured,
   };

@@ -36,6 +36,7 @@
 - 공개:
   - `/`
   - `/en`
+  - `/status`, `/en/status`
   - `/blog`, `/blog/[slug]`
   - `/en/blog`, `/en/blog/[slug]`
 - 인증:
@@ -59,6 +60,7 @@
 - `NEXT_PUBLIC_ENABLE_SUPABASE`
 - `NEXT_PUBLIC_ENABLE_SANITY`
 - `NEXT_PUBLIC_ENABLE_AUTH`
+- `NEXT_PUBLIC_ENABLE_I18N`
 - `NEXT_PUBLIC_ENABLE_GA`
 
 ### Supabase

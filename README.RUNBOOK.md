@@ -27,11 +27,18 @@
 - 운영 + CMS 모두 필요: Supabase ON, Sanity ON
 - 정적 랜딩만 필요: 둘 다 OFF
 
+i18n 사용 여부:
+
+- 다국어 사이트면 `NEXT_PUBLIC_ENABLE_I18N=true`
+- 단일 언어 사이트면 `NEXT_PUBLIC_ENABLE_I18N=false`
+- i18n OFF면 locale selector UI와 비기본 locale 경로를 함께 비활성화
+
 확정 후 `.env.local`에 플래그를 반영합니다.
 
 - `NEXT_PUBLIC_ENABLE_SUPABASE=true|false`
 - `NEXT_PUBLIC_ENABLE_SANITY=true|false`
 - `NEXT_PUBLIC_ENABLE_AUTH=true|false`
+- `NEXT_PUBLIC_ENABLE_I18N=true|false`
 
 인증 사용 여부 판단 기준:
 
@@ -86,6 +93,7 @@
 - `NEXT_PUBLIC_ENABLE_SUPABASE`
 - `NEXT_PUBLIC_ENABLE_SANITY`
 - `NEXT_PUBLIC_ENABLE_AUTH`
+- `NEXT_PUBLIC_ENABLE_I18N`
 - `NEXT_PUBLIC_ENABLE_GA`
 
 Supabase 사용 시:
@@ -168,6 +176,7 @@ pnpm run provision:all
 
 - `/`(기본언어) 또는 `/en`(비기본언어)에서 backend status 확인
 - Sanity 미구성 시 콘텐츠 목록이 숨김+안내 상태인지 확인
+- `/status`(또는 `/en/status`)에서 모듈 상태 UI 확인
 
 ### Sanity 콘텐츠/Studio 검증
 
