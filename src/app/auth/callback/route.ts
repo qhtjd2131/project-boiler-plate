@@ -1,6 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
+import { isAuthModuleEnabled } from "@/lib/auth/runtime-config";
 import { getPublicEnv, getSupabasePublicKey } from "@/lib/env/public";
 
 function sanitizeNextPath(value: string | null): string {
@@ -12,6 +13,10 @@ function sanitizeNextPath(value: string | null): string {
 }
 
 export async function GET(request: NextRequest) {
+  if (!isAuthModuleEnabled()) {
+    return NextResponse.redirect(new URL("/", request.url));
+  }
+
   const publicEnv = getPublicEnv();
   const supabaseUrl = publicEnv.NEXT_PUBLIC_SUPABASE_URL;
   const supabasePublicKey = getSupabasePublicKey(publicEnv);

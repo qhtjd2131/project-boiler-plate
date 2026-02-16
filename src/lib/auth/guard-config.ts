@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { getAuthRuntimeConfig } from "@/lib/auth/runtime-config";
+
 const guardConfigSchema = z.object({
   AUTH_GUARD_ENABLED: z.enum(["true", "false"]).default("true"),
   AUTH_SIGN_IN_PATH: z.string().default("/auth/sign-in"),
@@ -25,8 +27,10 @@ export function getAuthGuardConfig(): AuthGuardConfig {
     AUTH_FORBIDDEN_PATH: process.env.AUTH_FORBIDDEN_PATH,
   });
 
+  const authRuntime = getAuthRuntimeConfig();
+
   cachedConfig = {
-    enabled: parsed.AUTH_GUARD_ENABLED === "true",
+    enabled: parsed.AUTH_GUARD_ENABLED === "true" && authRuntime.enabled,
     signInPath: parsed.AUTH_SIGN_IN_PATH,
     forbiddenPath: parsed.AUTH_FORBIDDEN_PATH,
   };

@@ -9,9 +9,11 @@ export type BackendStatus = {
   enabled: {
     supabase: boolean;
     sanity: boolean;
+    auth: boolean;
   };
   configured: {
     supabase: boolean;
     sanity: boolean;
+    auth: boolean;
   };
 };

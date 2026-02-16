@@ -21,7 +21,8 @@
 
 ### 빠른 결정표
 
-- 운영 기능만 필요: Supabase ON, Sanity OFF
+- 운영 기능만 필요(로그인 없음): Supabase ON, Auth OFF, Sanity OFF
+- 운영 기능 + 로그인 필요: Supabase ON, Auth ON, Sanity OFF
 - 공개 CMS만 필요: Supabase OFF, Sanity ON
 - 운영 + CMS 모두 필요: Supabase ON, Sanity ON
 - 정적 랜딩만 필요: 둘 다 OFF
@@ -30,6 +31,12 @@
 
 - `NEXT_PUBLIC_ENABLE_SUPABASE=true|false`
 - `NEXT_PUBLIC_ENABLE_SANITY=true|false`
+- `NEXT_PUBLIC_ENABLE_AUTH=true|false`
+
+인증 사용 여부 판단 기준:
+
+- 로그인/회원 권한이 필요하면 `NEXT_PUBLIC_ENABLE_AUTH=true`
+- 로그인 기능이 불필요하면 `NEXT_PUBLIC_ENABLE_AUTH=false`
 
 ## 1) 고객 접근 권한 요청
 
@@ -78,6 +85,7 @@
 - `NEXT_PUBLIC_SITE_URL`
 - `NEXT_PUBLIC_ENABLE_SUPABASE`
 - `NEXT_PUBLIC_ENABLE_SANITY`
+- `NEXT_PUBLIC_ENABLE_AUTH`
 - `NEXT_PUBLIC_ENABLE_GA`
 
 Supabase 사용 시:
@@ -174,14 +182,20 @@ pnpm run provision:all
   - `NEXT_PUBLIC_SANITY_STUDIO_PATH` -> `admin`
 - 점검 순서:
   1. 로그아웃 상태로 `/app` 접근 -> 로그인 페이지 리다이렉트
-  2. 이메일/비밀번호 로그인 또는 Google/Kakao OAuth 로그인 동작 확인
-  3. role 메타데이터 변경 후 Studio 접근 권한 확인
+  2. `/auth/sign-up`에서 이메일/비밀번호 회원가입 동작 확인
+  3. 이메일/비밀번호 로그인 또는 Google/Kakao OAuth 로그인 동작 확인
+  4. role 메타데이터 변경 후 Studio 접근 권한 확인
 
 Auth Redirect URL 권장 등록:
 
 - `https://<domain>/auth/callback`
 - `https://<domain>/<locale>/auth/callback`
 - 로컬: `http://localhost:3000/auth/callback`, `http://localhost:3000/ko/auth/callback`, `http://localhost:3000/en/auth/callback`
+
+Auth 보안 점검:
+
+- 비밀번호 정책(최소 10자 + 대문자/소문자/숫자/특수문자) 통과 여부 확인
+- 비밀번호 로그인 반복 실패 시 쿨다운 메시지 노출 확인
 
 ## 6) i18n + SEO 검증
 

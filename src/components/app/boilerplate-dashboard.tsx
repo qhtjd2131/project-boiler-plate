@@ -103,6 +103,10 @@ export function BoilerplateDashboard({ locale, messages }: BoilerplateDashboardP
                 <span className="text-sm font-medium">Sanity enabled</span>
                 <Switch checked={statusQuery.data.enabled.sanity} disabled />
               </div>
+              <div className="flex items-center justify-between rounded-lg border border-dashed p-3">
+                <span className="text-sm font-medium">Auth enabled</span>
+                <Switch checked={statusQuery.data.enabled.auth} disabled />
+              </div>
               <Separator />
               <div className="space-y-2 text-sm">
                 <p>
@@ -116,6 +120,9 @@ export function BoilerplateDashboard({ locale, messages }: BoilerplateDashboardP
                 </p>
                 <p className="text-muted-foreground">
                   Sanity configured: {String(statusQuery.data.configured.sanity)}
+                </p>
+                <p className="text-muted-foreground">
+                  Auth configured: {String(statusQuery.data.configured.auth)}
                 </p>
               </div>
             </>

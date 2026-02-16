@@ -1,6 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
+import { isAuthModuleEnabled } from "@/lib/auth/runtime-config";
 import { DEFAULT_LOCALE, isAppLocale, localizePathname, type AppLocale } from "@/lib/i18n/config";
 import { getPublicEnv, getSupabasePublicKey } from "@/lib/env/public";
 
@@ -19,6 +20,10 @@ type RouteContext = {
 export async function GET(request: NextRequest, context: RouteContext) {
   const { locale } = await context.params;
   const safeLocale: AppLocale = isAppLocale(locale) ? locale : DEFAULT_LOCALE;
+
+  if (!isAuthModuleEnabled()) {
+    return NextResponse.redirect(new URL(localizePathname("/", safeLocale), request.url));
+  }
 
   const publicEnv = getPublicEnv();
   const supabaseUrl = publicEnv.NEXT_PUBLIC_SUPABASE_URL;

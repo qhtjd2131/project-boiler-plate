@@ -1,6 +1,7 @@
 "use client";
 
-import type { AuthProvider, OAuthProvider } from "@/lib/auth/types";
+import type { AuthProvider, OAuthProvider, PasswordSignUpResult } from "@/lib/auth/types";
+import { validatePasswordPolicy } from "@/lib/auth/password-policy";
 import { getErrorMessage, resultErr, resultOk, type AppResult } from "@/lib/contracts/result";
 import { getSupabaseBrowserClient } from "@/lib/supabase/browser-client";
 
@@ -34,6 +35,48 @@ export class SupabaseAuthProvider implements AuthProvider {
     }
   }
 
+  async signUpWithPassword(
+    email: string,
+    password: string,
+  ): Promise<AppResult<PasswordSignUpResult>> {
+    const policy = validatePasswordPolicy(password);
+
+    if (!policy.valid) {
+      return resultErr(
+        "VALIDATION",
+        "Password does not meet security policy",
+        policy.errors.join("; "),
+      );
+    }
+
+    try {
+      const client = getSupabaseBrowserClient();
+      const { data, error } = await client.auth.signUp({
+        email,
+        password,
+      });
+
+      if (error) {
+        const normalizedError = error.message.toLowerCase();
+
+        if (normalizedError.includes("already") || normalizedError.includes("registered")) {
+          return resultErr("CONFLICT", "An account with this email already exists");
+        }
+
+        return resultErr("UNAUTHORIZED", "Unable to create account with email and password");
+      }
+
+      return resultOk(
+        {
+          requiresEmailConfirmation: !data.session,
+        },
+        "supabase",
+      );
+    } catch (error) {
+      return resultErr("INTERNAL", "Supabase sign-up failed", getErrorMessage(error));
+    }
+  }
+
   async signInWithPassword(email: string, password: string): Promise<AppResult<null>> {
     try {
       const client = getSupabaseBrowserClient();
@@ -43,11 +86,7 @@ export class SupabaseAuthProvider implements AuthProvider {
       });
 
       if (error) {
-        return resultErr(
-          "UNAUTHORIZED",
-          "Unable to sign in with email and password",
-          error.message,
-        );
+        return resultErr("UNAUTHORIZED", "Invalid email or password");
       }
 
       return resultOk(null, "supabase");

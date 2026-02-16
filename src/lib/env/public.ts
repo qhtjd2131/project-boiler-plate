@@ -3,6 +3,7 @@ import { z } from "zod";
 const publicEnvSchema = z.object({
   NEXT_PUBLIC_ENABLE_SUPABASE: z.enum(["true", "false"]).default("false"),
   NEXT_PUBLIC_ENABLE_SANITY: z.enum(["true", "false"]).default("false"),
+  NEXT_PUBLIC_ENABLE_AUTH: z.enum(["true", "false"]).default("true"),
   NEXT_PUBLIC_ENABLE_GA: z.enum(["true", "false"]).default("false"),
   NEXT_PUBLIC_SITE_URL: z.string().default("http://localhost:3000"),
   NEXT_PUBLIC_SUPABASE_PROJECT_ID: z.string().default(""),
@@ -37,6 +38,7 @@ export function getPublicEnv(): PublicEnv {
   cachedPublicEnv = publicEnvSchema.parse({
     NEXT_PUBLIC_ENABLE_SUPABASE: process.env.NEXT_PUBLIC_ENABLE_SUPABASE,
     NEXT_PUBLIC_ENABLE_SANITY: process.env.NEXT_PUBLIC_ENABLE_SANITY,
+    NEXT_PUBLIC_ENABLE_AUTH: process.env.NEXT_PUBLIC_ENABLE_AUTH,
     NEXT_PUBLIC_ENABLE_GA: process.env.NEXT_PUBLIC_ENABLE_GA,
     NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
     NEXT_PUBLIC_SUPABASE_PROJECT_ID: process.env.NEXT_PUBLIC_SUPABASE_PROJECT_ID,

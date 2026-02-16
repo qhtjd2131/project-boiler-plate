@@ -14,6 +14,7 @@
 
 ```env
 NEXT_PUBLIC_ENABLE_SUPABASE=true
+NEXT_PUBLIC_ENABLE_AUTH=true
 NEXT_PUBLIC_SUPABASE_PROJECT_ID=
 NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=
@@ -36,14 +37,36 @@ pnpm run provision:supabase
 - 현재 연결 database 정보 출력
 - 샘플 테이블 자동 생성 없음(도메인 스키마는 프로젝트별로 별도 관리)
 
+Auth 모듈 분리 규칙:
+
+- Supabase를 DB/서버 기능으로만 쓸 경우 `NEXT_PUBLIC_ENABLE_AUTH=false`로 설정 가능
+- 로그인/회원 기능이 필요한 프로젝트에서만 `NEXT_PUBLIC_ENABLE_AUTH=true` 사용
+
 ## 4) 인증(Auth) 설정
 
-- Auth Provider는 기본 이메일/비밀번호 + OAuth(`google`, `kakao`)로 구현되어 있다.
+- Auth Provider는 기본 회원가입 + 이메일/비밀번호 로그인 + OAuth(`google`, `kakao`)로 구현되어 있다.
 - Supabase Auth 설정에서 Email provider와 Google/Kakao provider를 활성화한다.
 - Redirect URL에 다음 경로를 포함한다.
   - `https://<domain>/auth/callback`
   - `https://<domain>/<locale>/auth/callback`
   - 로컬: `http://localhost:3000/auth/callback`, `http://localhost:3000/ko/auth/callback`, `http://localhost:3000/en/auth/callback`
+
+기본 인증 라우트:
+
+- `/auth/sign-in`, `/en/auth/sign-in`
+- `/auth/sign-up`, `/en/auth/sign-up`
+
+## 4.5) 비밀번호 보안 정책
+
+- 회원가입 비밀번호 정책(앱 레벨):
+  - 최소 10자
+  - 대문자/소문자/숫자/특수문자 각 1개 이상
+- 비밀번호 로그인 실패가 반복되면 UI에서 30초 쿨다운 적용
+- 비밀번호 해시/검증은 Supabase Auth에서 처리(애플리케이션 DB에 원문 저장 금지)
+- Supabase Auth 설정 권장:
+  - Email confirmation 정책(필수/선택) 프로젝트 정책에 맞게 고정
+  - Bot/abuse 방지를 위한 Auth rate limit 기본값 유지 또는 강화
+  - 필요 시 CAPTCHA/추가 검증 단계 적용
 
 ## 5) 권한(RBAC) 정책 연결
 

@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { isAuthModuleEnabled } from "@/lib/auth/runtime-config";
 import {
   DEFAULT_LOCALE,
   getLocaleDisplayName,
@@ -21,12 +22,17 @@ export function SiteHeader() {
   const pathname = usePathname();
   const locale = getLocaleFromPathname(pathname) ?? DEFAULT_LOCALE;
   const messages = getMessages(locale);
+  const authEnabled = isAuthModuleEnabled();
 
   const navigation = [
     { href: localizePathname("/", locale), label: messages.common.dashboard },
-    { href: localizePathname("/app", locale), label: messages.common.app },
     { href: localizePathname("/blog", locale), label: messages.common.blog },
-    { href: localizePathname("/auth/sign-in", locale), label: messages.common.signIn },
+    ...(authEnabled
+      ? [
+          { href: localizePathname("/app", locale), label: messages.common.app },
+          { href: localizePathname("/auth/sign-in", locale), label: messages.common.signIn },
+        ]
+      : []),
     { href: "/api/backends/status", label: messages.common.backendStatusApi },
   ];
 

@@ -17,7 +17,7 @@
 ## 2) 라우팅 동작
 
 - `/`는 기본언어(`ko`)를 렌더링하고, `accept-language`가 비기본언어면 해당 locale 경로로 이동
-- locale 없는 경로(`/blog`, `/app`, `/auth/sign-in`)는 내부적으로 기본언어 route로 rewrite 처리
+- locale 없는 경로(`/blog`, `/app`, `/auth/sign-in`, `/auth/sign-up`)는 내부적으로 기본언어 route로 rewrite 처리
 - `/ko/*` 요청은 canonical 기본경로(`/*`)로 301/308 리다이렉트
 - 보호 라우트는 proxy에서 locale를 인식해 sign-in/forbidden 경로도 locale 유지
 

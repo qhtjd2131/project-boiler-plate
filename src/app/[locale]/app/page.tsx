@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { isAuthModuleEnabled } from "@/lib/auth/runtime-config";
 import { canAccessRole, getServerAuthState } from "@/lib/auth/server-auth-state";
 import { isAppLocale, localizePathname } from "@/lib/i18n/config";
 import { getMessages } from "@/lib/i18n/messages";
@@ -18,6 +19,10 @@ export async function generateMetadata({ params }: AppPageProps): Promise<Metada
   const { locale } = await params;
 
   if (!isAppLocale(locale)) {
+    return {};
+  }
+
+  if (!isAuthModuleEnabled()) {
     return {};
   }
 
@@ -36,6 +41,10 @@ export default async function ProtectedAppPage({ params }: AppPageProps) {
   const { locale } = await params;
 
   if (!isAppLocale(locale)) {
+    notFound();
+  }
+
+  if (!isAuthModuleEnabled()) {
     notFound();
   }
 

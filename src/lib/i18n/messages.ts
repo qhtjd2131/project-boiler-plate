@@ -23,16 +23,37 @@ export type AppMessages = {
     sanityNotConfiguredNotice: string;
   };
   auth: {
+    modeSignIn: string;
+    modeSignUp: string;
     signInTitle: string;
     signInDescription: string;
+    signUpTitle: string;
+    signUpDescription: string;
     emailLabel: string;
     passwordLabel: string;
+    confirmPasswordLabel: string;
     emailPlaceholder: string;
     passwordPlaceholder: string;
+    confirmPasswordPlaceholder: string;
     signInWithEmail: string;
+    signUpWithEmail: string;
     signInWithGoogle: string;
     signInWithKakao: string;
+    signUpWithGoogle: string;
+    signUpWithKakao: string;
     signingIn: string;
+    signingUp: string;
+    orLabel: string;
+    invalidCredentials: string;
+    accountExists: string;
+    passwordMismatch: string;
+    passwordPolicyTitle: string;
+    passwordPolicyItems: readonly string[];
+    passwordPolicyError: string;
+    signUpVerificationSent: string;
+    switchToSignIn: string;
+    switchToSignUp: string;
+    tooManyAttempts: string;
     redirectPathLabel: string;
   };
   appPage: {
@@ -94,16 +115,44 @@ const messages: Record<AppLocale, AppMessages> = {
         "Sanity 플래그는 켜져 있지만 프로젝트 설정이 누락되어 콘텐츠 목록을 숨깁니다. NEXT_PUBLIC_SANITY_PROJECT_ID, NEXT_PUBLIC_SANITY_DATASET, NEXT_PUBLIC_SANITY_API_VERSION을 확인하세요.",
     },
     auth: {
+      modeSignIn: "로그인",
+      modeSignUp: "회원가입",
       signInTitle: "로그인",
       signInDescription: "보호된 경로는 Supabase 인증 + RBAC 권한 정책을 사용합니다.",
+      signUpTitle: "회원가입",
+      signUpDescription: "고객 계정을 만들고 즉시 서비스 이용을 시작할 수 있습니다.",
       emailLabel: "이메일",
       passwordLabel: "비밀번호",
+      confirmPasswordLabel: "비밀번호 확인",
       emailPlaceholder: "you@client.com",
       passwordPlaceholder: "비밀번호를 입력하세요",
+      confirmPasswordPlaceholder: "비밀번호를 다시 입력하세요",
       signInWithEmail: "이메일로 로그인",
+      signUpWithEmail: "이메일로 회원가입",
       signInWithGoogle: "Google로 로그인",
       signInWithKakao: "Kakao로 로그인",
+      signUpWithGoogle: "Google로 회원가입",
+      signUpWithKakao: "Kakao로 회원가입",
       signingIn: "로그인 중...",
+      signingUp: "가입 처리 중...",
+      orLabel: "or",
+      invalidCredentials: "이메일 또는 비밀번호가 올바르지 않습니다.",
+      accountExists: "이미 가입된 이메일입니다. 로그인으로 진행해주세요.",
+      passwordMismatch: "비밀번호와 비밀번호 확인이 일치하지 않습니다.",
+      passwordPolicyTitle: "비밀번호 보안 정책",
+      passwordPolicyItems: [
+        "최소 10자 이상",
+        "영문 대문자 1개 이상",
+        "영문 소문자 1개 이상",
+        "숫자 1개 이상",
+        "특수문자 1개 이상",
+      ],
+      passwordPolicyError: "비밀번호가 보안 정책을 만족하지 않습니다.",
+      signUpVerificationSent:
+        "회원가입 요청이 접수되었습니다. 이메일 인증 링크를 확인한 뒤 로그인하세요.",
+      switchToSignIn: "이미 계정이 있나요? 로그인",
+      switchToSignUp: "계정이 없나요? 회원가입",
+      tooManyAttempts: "로그인 시도가 너무 많습니다. {seconds}초 후 다시 시도해주세요.",
       redirectPathLabel: "로그인 후 이동 경로",
     },
     appPage: {
@@ -163,16 +212,44 @@ const messages: Record<AppLocale, AppMessages> = {
         "Sanity flag is on but project settings are missing, so content list is hidden. Check NEXT_PUBLIC_SANITY_PROJECT_ID, NEXT_PUBLIC_SANITY_DATASET, and NEXT_PUBLIC_SANITY_API_VERSION.",
     },
     auth: {
+      modeSignIn: "Sign In",
+      modeSignUp: "Sign Up",
       signInTitle: "Sign In",
       signInDescription: "Protected routes use Supabase auth + RBAC policy.",
+      signUpTitle: "Create Account",
+      signUpDescription: "Create a customer account and start using protected features.",
       emailLabel: "Email",
       passwordLabel: "Password",
+      confirmPasswordLabel: "Confirm password",
       emailPlaceholder: "you@client.com",
       passwordPlaceholder: "Enter your password",
+      confirmPasswordPlaceholder: "Re-enter your password",
       signInWithEmail: "Sign in with email",
+      signUpWithEmail: "Sign up with email",
       signInWithGoogle: "Continue with Google",
       signInWithKakao: "Continue with Kakao",
+      signUpWithGoogle: "Sign up with Google",
+      signUpWithKakao: "Sign up with Kakao",
       signingIn: "Signing in...",
+      signingUp: "Creating account...",
+      orLabel: "or",
+      invalidCredentials: "Invalid email or password.",
+      accountExists: "An account with this email already exists.",
+      passwordMismatch: "Password and confirmation do not match.",
+      passwordPolicyTitle: "Password security policy",
+      passwordPolicyItems: [
+        "At least 10 characters",
+        "At least one uppercase letter",
+        "At least one lowercase letter",
+        "At least one number",
+        "At least one special character",
+      ],
+      passwordPolicyError: "Password does not satisfy the security policy.",
+      signUpVerificationSent:
+        "Sign-up request was accepted. Verify your email, then sign in with your account.",
+      switchToSignIn: "Already have an account? Sign in",
+      switchToSignUp: "Need an account? Sign up",
+      tooManyAttempts: "Too many sign-in attempts. Try again in {seconds} seconds.",
       redirectPathLabel: "After sign-in, redirect path",
     },
     appPage: {

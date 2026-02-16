@@ -24,11 +24,12 @@
 ## 4) 현재 주요 기능
 
 - locale 라우팅(`ko`, `en`) 및 locale SEO
-- Supabase 기반 로그인(이메일/비밀번호 + Google/Kakao OAuth) + RBAC
+- Supabase 기반 인증(회원가입 + 이메일/비밀번호 로그인 + Google/Kakao OAuth) + RBAC
 - Sanity 공개 콘텐츠 API/페이지
 - Sanity Studio 임베드 (`NEXT_PUBLIC_SANITY_STUDIO_PATH`)
 - 기능 플래그 기반 모듈 게이트
 - 상태 기반 대시보드 UI(미구성 시 안내 중심)
+- Auth는 Supabase와 별도 플래그(`NEXT_PUBLIC_ENABLE_AUTH`)로 독립 제어
 
 ## 5) 주요 라우트
 
@@ -39,6 +40,7 @@
   - `/en/blog`, `/en/blog/[slug]`
 - 인증:
   - `/auth/sign-in`, `/en/auth/sign-in`
+  - `/auth/sign-up`, `/en/auth/sign-up`
   - `/auth/callback`, `/en/auth/callback`
 - 보호:
   - `/app`, `/en/app` (member 이상)
@@ -56,6 +58,7 @@
 - `NEXT_PUBLIC_SITE_URL`
 - `NEXT_PUBLIC_ENABLE_SUPABASE`
 - `NEXT_PUBLIC_ENABLE_SANITY`
+- `NEXT_PUBLIC_ENABLE_AUTH`
 - `NEXT_PUBLIC_ENABLE_GA`
 
 ### Supabase
