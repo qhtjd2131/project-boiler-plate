@@ -1,7 +1,13 @@
 import { NextResponse, type NextRequest } from "next/server";
 
 import { getAuthGuardConfig } from "@/lib/auth/guard-config";
-import { findRouteAccessRule, hasMinimumRole, resolveRoleFromUser } from "@/lib/auth/rbac";
+import { getAuthProfileById } from "@/lib/auth/profiles";
+import {
+  findRouteAccessRule,
+  hasMinimumRole,
+  resolveProfileStatus,
+  resolveRoleFromProfile,
+} from "@/lib/auth/rbac";
 import { resultErr } from "@/lib/contracts/result";
 import {
   DEFAULT_LOCALE,
@@ -68,7 +74,21 @@ export async function proxy(request: NextRequest) {
     return rejectUnauthorized(request, config.signInPath, supabaseResponse);
   }
 
-  const role = resolveRoleFromUser(user);
+  const profileResult = await getAuthProfileById(supabase, user.id);
+
+  if (!profileResult.ok) {
+    return rejectForProfileReadError(request, supabaseResponse, profileResult.error.message);
+  }
+
+  if (!profileResult.data) {
+    return rejectForbidden(request, config.forbiddenPath, supabaseResponse);
+  }
+
+  if (resolveProfileStatus(profileResult.data.status) === "blocked") {
+    return rejectForbidden(request, config.forbiddenPath, supabaseResponse);
+  }
+
+  const role = resolveRoleFromProfile(profileResult.data.role);
 
   if (!hasMinimumRole(role, rule.minRole)) {
     return rejectForbidden(request, config.forbiddenPath, supabaseResponse);
@@ -148,6 +168,27 @@ function rejectForbidden(
     NextResponse.redirect(new URL(localizedForbiddenPath, request.url)),
     sourceResponse,
   );
+}
+
+function rejectForProfileReadError(
+  request: NextRequest,
+  sourceResponse: NextResponse,
+  detail: string,
+) {
+  if (isApiRequest(request.nextUrl.pathname)) {
+    return withCookies(
+      NextResponse.json(resultErr("INTERNAL", "Failed to read profile information", detail), {
+        status: 500,
+      }),
+      sourceResponse,
+    );
+  }
+
+  const fallback = localizeIfPresent(request.nextUrl.pathname, "/forbidden");
+  const fallbackUrl = new URL(fallback, request.url);
+  fallbackUrl.searchParams.set("error", "profile_read_failed");
+
+  return withCookies(NextResponse.redirect(fallbackUrl), sourceResponse);
 }
 
 function isApiRequest(pathname: string): boolean {

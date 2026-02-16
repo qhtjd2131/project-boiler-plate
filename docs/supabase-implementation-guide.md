@@ -25,7 +25,7 @@ SUPABASE_DB_URL=
 
 ## 3) 기본 스키마 프로비저닝
 
-아래 명령으로 Supabase DB 연결 상태를 검증한다.
+아래 명령으로 Supabase 핵심 인증 프로필 스키마를 준비한다.
 
 ```bash
 pnpm run provision:supabase
@@ -35,12 +35,28 @@ pnpm run provision:supabase
 
 - DB 연결 성공 여부 출력
 - 현재 연결 database 정보 출력
-- 샘플 테이블 자동 생성 없음(도메인 스키마는 프로젝트별로 별도 관리)
+- `public.profiles` 테이블 생성/검증
+- `auth.users` -> `profiles` 자동 생성 트리거 생성/검증
+- `profiles` RLS 정책(본인 select/insert/update) 생성/검증
+- 이메일 변경 동기화 트리거 생성/검증
 
 Auth 모듈 분리 규칙:
 
 - Supabase를 DB/서버 기능으로만 쓸 경우 `NEXT_PUBLIC_ENABLE_AUTH=false`로 설정 가능
 - 로그인/회원 기능이 필요한 프로젝트에서만 `NEXT_PUBLIC_ENABLE_AUTH=true` 사용
+
+## 3.5) profiles 기본 컬럼 규칙
+
+회원가입 후 profiles에는 아래 값이 기본 저장된다.
+
+- `id`: 인증된 `auth.users.id`
+- `email`: 인증된 email
+- `status`: `active`
+- `role`: `customer`
+- `display_name`: 인증된 email
+- `avatar_url`: `null`
+
+관리자 계정은 운영자가 Supabase에서 `profiles.role='admin'`으로 변경해 승격한다.
 
 ## 4) 인증(Auth) 설정
 
@@ -77,12 +93,11 @@ Auth 모듈 분리 규칙:
 - `/api/private/*` -> `member` 이상
 - `/api/admin/*` -> `admin`
 
-역할 해석 우선순위:
+역할 해석 기준:
 
-1. `app_metadata.role`
-2. `user_metadata.role`
-3. `app_metadata.app_role`
-4. fallback `member`
+- `profiles.role='customer'` -> 앱 권한 `member`
+- `profiles.role='admin'` -> 앱 권한 `admin`
+- `profiles.status='blocked'` -> 보호 경로 접근 차단
 
 ## 6) 운영 DB write 안정성 규칙
 

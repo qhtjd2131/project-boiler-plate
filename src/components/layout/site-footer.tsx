@@ -48,6 +48,14 @@ export async function SiteFooter() {
           <p className="max-w-xs text-xs leading-5 text-muted-foreground">
             {messages.footer.brandDescription}
           </p>
+          <div className="pt-2">
+            <h3 className="text-xs font-semibold tracking-tight text-foreground">
+              {messages.footer.deliveryTitle}
+            </h3>
+            <p className="max-w-xs pt-1 text-xs leading-5 text-muted-foreground">
+              {messages.footer.deliveryDescription}
+            </p>
+          </div>
         </section>
 
         <section className="space-y-2">

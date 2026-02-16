@@ -66,6 +66,9 @@ export default async function ProtectedAppPage({ params }: AppPageProps) {
             {messages.appPage.roleLabel}: <Badge variant="outline">{authState.role}</Badge>
           </p>
           <p className="text-sm text-muted-foreground">User ID: {authState.userId ?? "-"}</p>
+          <p className="text-sm text-muted-foreground">
+            {messages.appPage.profileStatusLabel}: {authState.profileStatus}
+          </p>
 
           <p className="text-sm text-muted-foreground">
             {messages.appPage.hasAdminLabel}: {String(canAccessRole(authState.role, "admin"))}

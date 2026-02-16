@@ -25,6 +25,7 @@
 
 - locale 라우팅(`ko`, `en`) 및 locale SEO
 - Supabase 기반 인증(회원가입 + 이메일/비밀번호 로그인 + Google/Kakao OAuth) + RBAC
+- `public.profiles` 기반 사용자 상태/역할(`customer`, `admin`) 관리
 - Sanity 공개 콘텐츠 API/페이지
 - Sanity Studio 임베드 (`NEXT_PUBLIC_SANITY_STUDIO_PATH`)
 - 기능 플래그 기반 모듈 게이트
@@ -89,7 +90,7 @@
 ## 8) provisioning
 
 - `pnpm run provision:supabase`
-  - Supabase DB 연결 상태 검증
+  - Supabase `profiles` 테이블/RLS/트리거 준비
 - `pnpm run provision:sanity`
   - Sanity 연결/조회 가능 상태 검증
 - `pnpm run provision:all`

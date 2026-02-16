@@ -1,7 +1,14 @@
 import "server-only";
 
 import { getErrorMessage } from "@/lib/contracts/result";
-import { hasMinimumRole, resolveRoleFromUser, type AppRole } from "@/lib/auth/rbac";
+import { getAuthProfileById } from "@/lib/auth/profiles";
+import {
+  hasMinimumRole,
+  resolveProfileStatus,
+  resolveRoleFromProfile,
+  type AppRole,
+  type ProfileStatus,
+} from "@/lib/auth/rbac";
 import { getSupabaseAuthServerClient } from "@/lib/supabase/auth-server-client";
 
 export type ServerAuthState = {
@@ -10,6 +17,7 @@ export type ServerAuthState = {
   userId: string | null;
   email: string | null;
   role: AppRole;
+  profileStatus: ProfileStatus | "missing";
   error?: string;
 };
 
@@ -23,6 +31,7 @@ export async function getServerAuthState(): Promise<ServerAuthState> {
       userId: null,
       email: null,
       role: "guest",
+      profileStatus: "missing",
     };
   }
 
@@ -36,16 +45,48 @@ export async function getServerAuthState(): Promise<ServerAuthState> {
         userId: null,
         email: null,
         role: "guest",
+        profileStatus: "missing",
         error: error?.message,
       };
     }
+
+    const profileResult = await getAuthProfileById(client, data.user.id);
+
+    if (!profileResult.ok) {
+      return {
+        configured: true,
+        isAuthenticated: true,
+        userId: data.user.id,
+        email: data.user.email ?? null,
+        role: "guest",
+        profileStatus: "missing",
+        error: profileResult.error.message,
+      };
+    }
+
+    if (!profileResult.data) {
+      return {
+        configured: true,
+        isAuthenticated: true,
+        userId: data.user.id,
+        email: data.user.email ?? null,
+        role: "guest",
+        profileStatus: "missing",
+        error: "Profile record is missing",
+      };
+    }
+
+    const profileStatus = resolveProfileStatus(profileResult.data.status);
+    const role =
+      profileStatus === "blocked" ? "guest" : resolveRoleFromProfile(profileResult.data.role);
 
     return {
       configured: true,
       isAuthenticated: true,
       userId: data.user.id,
       email: data.user.email ?? null,
-      role: resolveRoleFromUser(data.user),
+      role,
+      profileStatus,
     };
   } catch (error) {
     return {
@@ -54,6 +95,7 @@ export async function getServerAuthState(): Promise<ServerAuthState> {
       userId: null,
       email: null,
       role: "guest",
+      profileStatus: "missing",
       error: getErrorMessage(error),
     };
   }

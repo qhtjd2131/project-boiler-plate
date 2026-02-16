@@ -62,6 +62,7 @@ export type AppMessages = {
     title: string;
     description: string;
     authStatusLabel: string;
+    profileStatusLabel: string;
     roleLabel: string;
     hasAdminLabel: string;
     goDashboard: string;
@@ -195,6 +196,7 @@ const messages: Record<AppLocale, AppMessages> = {
       title: "보호된 앱 페이지",
       description: "이 경로는 proxy + RBAC 가드로 보호됩니다.",
       authStatusLabel: "인증 상태",
+      profileStatusLabel: "프로필 상태",
       roleLabel: "역할",
       hasAdminLabel: "admin 권한 보유 여부",
       goDashboard: "대시보드로 이동",
@@ -327,6 +329,7 @@ const messages: Record<AppLocale, AppMessages> = {
       title: "Protected App Page",
       description: "This route is protected by proxy + RBAC guard.",
       authStatusLabel: "Authentication",
+      profileStatusLabel: "Profile status",
       roleLabel: "Role",
       hasAdminLabel: "Has admin access",
       goDashboard: "Go to dashboard",

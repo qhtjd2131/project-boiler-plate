@@ -146,11 +146,13 @@ pnpm run provision:supabase
 
 - DB 연결 확인
 - 현재 연결된 database 이름 출력
-- 샘플 테이블 자동 생성은 수행하지 않음
+- `public.profiles` 테이블 생성/검증
+- `auth.users` -> `profiles` 자동 동기화 트리거 생성/검증
+- profiles RLS 정책(본인 select/insert/update) 생성/검증
 
 주의:
 
-- 운영 테이블 생성/마이그레이션은 프로젝트 도메인 스키마 기준으로 별도 진행합니다.
+- 고객 도메인 테이블은 별도 마이그레이션으로 확장합니다.
 
 ### Sanity
 
@@ -193,7 +195,8 @@ pnpm run provision:all
   1. 로그아웃 상태로 `/app` 접근 -> 로그인 페이지 리다이렉트
   2. `/auth/sign-up`에서 이메일/비밀번호 회원가입 동작 확인
   3. 이메일/비밀번호 로그인 또는 Google/Kakao OAuth 로그인 동작 확인
-  4. role 메타데이터 변경 후 Studio 접근 권한 확인
+  4. `public.profiles`에 `id/email/status/role/display_name/avatar_url`가 자동 생성되는지 확인
+  5. `profiles.role='admin'` 변경 후 Studio 접근 권한 확인
 
 Auth Redirect URL 권장 등록:
 

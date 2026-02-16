@@ -4,6 +4,8 @@ import { stripLocaleFromPathname } from "@/lib/i18n/config";
 import { getSanityStudioPath } from "@/lib/sanity/studio-path";
 
 export type AppRole = "guest" | "member" | "editor" | "admin";
+export type ProfileRole = "customer" | "admin";
+export type ProfileStatus = "active" | "blocked";
 
 const ROLE_PRIORITY: Record<AppRole, number> = {
   guest: 0,
@@ -16,6 +18,14 @@ function isAppRole(value: unknown): value is AppRole {
   return value === "guest" || value === "member" || value === "editor" || value === "admin";
 }
 
+function isProfileRole(value: unknown): value is ProfileRole {
+  return value === "customer" || value === "admin";
+}
+
+function isProfileStatus(value: unknown): value is ProfileStatus {
+  return value === "active" || value === "blocked";
+}
+
 export function resolveRoleFromUser(user: User | null): AppRole {
   if (!user) {
     return "guest";
@@ -25,6 +35,18 @@ export function resolveRoleFromUser(user: User | null): AppRole {
     user.app_metadata?.role ?? user.user_metadata?.role ?? user.app_metadata?.app_role ?? "member";
 
   return isAppRole(candidate) ? candidate : "member";
+}
+
+export function resolveRoleFromProfile(role: unknown): AppRole {
+  if (!isProfileRole(role)) {
+    return "member";
+  }
+
+  return role === "admin" ? "admin" : "member";
+}
+
+export function resolveProfileStatus(status: unknown): ProfileStatus {
+  return isProfileStatus(status) ? status : "active";
 }
 
 export function hasMinimumRole(currentRole: AppRole, requiredRole: AppRole): boolean {

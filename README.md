@@ -186,7 +186,7 @@ type AppResult<T> =
 - `pnpm run typecheck`: TypeScript 검사
 - `pnpm run format`: Prettier 포맷 적용
 - `pnpm run format:check`: Prettier 검사
-- `pnpm run provision:supabase`: Supabase DB 연결 검증
+- `pnpm run provision:supabase`: Supabase `profiles` 테이블/RLS/트리거 준비
 - `pnpm run provision:sanity`: Sanity 연결 검증
 - `pnpm run provision:all`: 두 provisioning 순차 실행
 
@@ -206,11 +206,16 @@ type AppResult<T> =
   - 이메일/비밀번호 로그인
   - Google OAuth
   - Kakao OAuth
-- 역할 해석 우선순위:
-  1. `user.app_metadata.role`
-  2. `user.user_metadata.role`
-  3. `user.app_metadata.app_role`
-  4. fallback `member`
+- 프로필 저장소:
+  - Supabase `public.profiles`에서 사용자 상태/역할을 관리
+  - 기본 role: `customer`, 기본 status: `active`
+  - 관리자 계정은 `profiles.role='admin'`으로 수동 승격
+- 앱 권한 매핑:
+  - `profiles.role='customer'` -> 앱 `member`
+  - `profiles.role='admin'` -> 앱 `admin`
+- 상태 해석 기준:
+  - `profiles.status='blocked'`면 보호 경로 접근 차단
+  - `profiles` 레코드가 없으면 보호 경로 접근 차단
 
 ### 인증 보안 정책
 
